@@ -1,0 +1,826 @@
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+INDEX:
+
+(I) Generalities about gene expression data
+
+    (a) About gene expression in early development
+
+    (b) Micro-arrays
+
+    (c) Bulk RNA-sequencing
+
+    (d) Single-Cell RNA sequencing
+
+(II) Generalities about gene expression data analysis and visualization
+
+    (a) Methods used in micro-arrays
+
+    (b) Methods used in bulk RNA-sequencing
+  
+    (c) Methods used in Single-Cell RNA-sequencing
+
+    (d) Tools for analysis
+
+    (d) General reviews
+
+(III) Generalities about databases and biology
+
+     (a) Articles
+
+     (b) Websites
+
+(IV) Clustering and biology
+
+    (a) For micro-arrays
+
+    (b) For bulk RNA-sequencing
+
+    (c) For Single-Cell RNA sequencing
+
+    (d) Other types of data
+
+    (e) Validation methods
+
+    (f) Feature selection
+
+    (g) Reviews
+
+(V) Interesting things
+
+    (a) Logics
+
+    (b) Information Theory
+
+    (c) Clustering theory
+
+    (d) Optimization
+
+    (e) Visualization
+
+    (f) Statistics
+
+    (g) Comparison of clustering algorithms
+
+    (h) Mathematics
+
+    (i) Model fitting
+
+    (j) Biology
+
+(VI) References
+
+     (a) Datasets
+  
+     (b) Tools
+
+     (c) Packages
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+
+(I) Generalities about gene expression data
+
+    (a) About gene expression in early development
+
+    - DePamphilis, M. L. (2002). Gene expression at the beginning of animal development (Vol. 12). Elsevier.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (b) Micro-arrays
+
+    - https://www.illumina.com/technology/next-generation-sequencing/mrna-seq.html
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (c) Bulk RNA-sequencing
+
+     - http://rnaseq.uoregon.edu
+
+     - Barbazuk, W. B., Emrich, S. J., Chen, H. D., Li, L., & Schnable, P. S. (2007). SNP discovery via 454 transcriptome sequencing. The plant journal, 51(5), 910-918.
+
+     - https://github.com/griffithlab/rnaseq_tutorial/wiki/RNAseq-Data
+
+     - https://en.wikibooks.org/wiki/Next_Generation_Sequencing_(NGS)
+
+     - Lockhart, D. J., & Winzeler, E. A. (2000). Genomics, gene expression and DNA arrays. Nature, 405(6788), 827-836.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (d) Single-Cell RNA sequencing
+
+     - Tintori, S. C., Nishimura, E. O., Golden, P., Lieb, J. D., & Goldstein, B. (2016). A transcriptional lineage of the early C. elegans embryo. Developmental cell, 38(4), 430-444.
+
+     - Stegle, O., Teichmann, S. A., & Marioni, J. C. (2015). Computational and analytical challenges in single-cell transcriptomics. Nature Reviews Genetics, 16(3), 133-145.
+
+     - Poirion, O. B., Zhu, X., Ching, T., & Garmire, L. (2016). Single-Cell Transcriptomics Bioinformatics and Computational Challenges. Frontiers in Genetics, 7.
+
+     - Kolodziejczyk, A. A., Kim, J. K., Svensson, V., Marioni, J. C., & Teichmann, S. A. (2015). The technology and biology of single-cell RNA sequencing. Molecular cell, 58(4), 610-620.
+
+     - Sultan, M., Schulz, M. H., Richard, H., Magen, A., Klingenhoff, A., Scherf, M., ... & Schmidt, D. (2008). A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome. Science, 321(5891), 956-960.
+
+     - Shapiro, E., Biezuner, T., & Linnarsson, S. (2013). Single-cell sequencing-based technologies will revolutionize whole-organism science. Nature Reviews Genetics, 14(9), 618-630.
+
+     - Svensson, V., Natarajan, K. N., Ly, L. H., Miragaia, R. J., Labalette, C., Macaulay, I. C., ... & Teichmann, S. A. (2017). Power analysis of single-cell RNA-sequencing experiments. Nature Methods.
+
+     - https://github.com/seandavi/awesome-single-cell
+
+     - Scialdone, A., Natarajan, K. N., Saraiva, L. R., Proserpio, V., Teichmann, S. A., Stegle, O., ... & Buettner, F. (2015). Computational assignment of cell-cycle stage from single-cell transcriptome data. Methods, 85, 54-61.
+
+     - Martinez-Jimenez, C. P., Eling, N., Chen, H. C., Vallejos, C. A., Kolodziejczyk, A. A., Connor, F., ... & de la Roche, M. (2017). Aging increases cell-to-cell transcriptional variability upon immune stimulation. Science, 355(6332), 1433-1436.
+
+     - Kim, J. K., & Marioni, J. C. (2013). Inferring the kinetics of stochastic gene expression from single-cell RNA-sequencing data. Genome biology, 14(1), R7.
+
+     - Kim, J. K., Kolodziejczyk, A. A., Illicic, T., Teichmann, S. A., & Marioni, J. C. (2015). Characterizing noise structure in single-cell RNA-seq distinguishes genuine from technical stochastic allelic expression. Nature communications, 6.
+
+     - Li, G. W., & Xie, X. S. (2011). Central dogma at the single-molecule level in living cells. Nature, 475(7356), 308-315.
+
+     - Smiley, M. W., & Proulx, S. R. (2010). Gene expression dynamics in randomly varying environments. Journal of mathematical biology, 61(2), 231-251.
+
+     - Snijder, B., & Pelkmans, L. (2011). Origins of regulated cell-to-cell variability. Nature reviews Molecular cell biology, 12(2), 119-125.
+
+     - http://michelebusby.tumblr.com/post/26913184737/thinking-about-designing-rna-seq-experiments-to
+
+     - Schurch, N. J., Schofield, P., Gierliński, M., Cole, C., Sherstnev, A., Singh, V., ... & Blaxter, M. (2016). How many biological replicates are needed in an RNA-seq experiment and which differential expression tool should you use?. RNA, 22(6), 839-851.
+
+     - Bacher, R., & Kendziorski, C. (2016). Design and computational analysis of single-cell RNA-sequencing experiments. Genome biology, 17(1), 63.
+
+     - Mooijman, D., Dey, S. S., Boisset, J. C., Crosetto, N., & van Oudenaarden, A. (2016). Single-cell 5hmC sequencing reveals chromosome-wide cell-to-cell variability and enables lineage reconstruction. Nature Biotechnology, 34(8), 852-856.
+
+     - Pollen, A. A., Nowakowski, T. J., Shuga, J., Wang, X., Leyrat, A. A., Lui, J. H., ... & Ramalingam, N. (2014). Low-coverage single-cell mRNA sequencing reveals cellular heterogeneity and activated signaling pathways in developing cerebral cortex. Nature biotechnology, 32(10), 1053-1058.
+
+     - Deng, Q., Ramsköld, D., Reinius, B., & Sandberg, R. (2014). Single-cell RNA-seq reveals dynamic, random monoallelic gene expression in mammalian cells. Science, 343(6167), 193-196.
+
+     - Tung, P. Y., Blischak, J. D., Hsiao, C. J., Knowles, D. A., Burnett, J. E., Pritchard, J. K., & Gilad, Y. (2017). Batch effects and the effective design of single-cell gene expression studies. Scientific Reports, 7.
+
+     - Kim, D. H., Marinov, G. K., Pepke, S., Singer, Z. S., He, P., Williams, B., ... & Wold, B. J. (2015). Single-cell transcriptome analysis reveals dynamic changes in lncRNA expression during reprogramming. Cell stem cell, 16(1), 88-101.
+
+     - Vallejos, C. A., Richardson, S., & Marioni, J. C. (2016). Beyond comparisons of means: understanding changes in gene expression at the single-cell level. Genome biology, 17(1), 70.
+
+     - https://www.bioconductor.org/help/workflows/simpleSingleCell/
+
+     - Matsuoka, T., Ikeda, T., Fujimaki, K., & Satou, Y. (2013). Transcriptome dynamics in early embryos of the ascidian, Ciona intestinalis. Developmental biology, 384(2), 375-385.
+
+     - Imai, K. S., Levine, M., Satoh, N., & Satou, Y. (2006). Regulatory blueprint for a chordate embryo. Science, 312(5777), 1183-1187.
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+
+(II) Generalities about gene expression data analysis and visualization
+
+    (a) Methods used in micro-arrays
+
+     - Simon, R., Lam, A., Li, M. C., Ngan, M., Menenzes, S., & Zhao, Y. (2007). Analysis of gene expression data using BRB-array tools. Cancer informatics, 3.
+
+     - Hibbs, M. A., Dirksen, N. C., Li, K., & Troyanskaya, O. G. (2005). Visualization methods for statistical analysis of microarray clusters. BMC bioinformatics, 6(1), 115.
+
+     - Ramanathan, M. (2003). A stochastic model for optimizing composite predictors based on gene expression profiles. Pharmaceutical research, 20(7), 996-1000.
+
+     - Kerr, M. K., & Churchill, G. A. (2001). Statistical design and the analysis of gene expression microarray data. Genetics Research, 77(2), 123-128.
+
+     - Kerr, M. K., Martin, M., & Churchill, G. A. (2000). Analysis of variance for gene expression microarray data. Journal of computational biology, 7(6), 819-837.
+
+     - Kerr, M. K., & Churchill, G. A. (2001). Bootstrapping cluster analysis: assessing the reliability of conclusions from microarray experiments. Proceedings of the national academy of sciences, 98(16), 8961-8965.
+
+     - Churchill, G. A. (2004). Using ANOVA to analyze microarray data. Biotechniques, 37(2), 173-5.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (b) Methods used in bulk RNA-sequencing
+
+     - Conesa, A., Madrigal, P., Tarazona, S., Gomez-Cabrero, D., Cervera, A., McPherson, A., ... & Mortazavi, A. (2016). A survey of best practices for RNA-seq data analysis. Genome biology, 17(1), 13.
+
+     - Wolf, J. B. (2013). Principles of transcriptome analysis and gene expression quantification: an RNA‐seq tutorial. Molecular ecology resources, 13(4), 559-572.
+
+     - Zhang, Q. (2017). Classification of RNA‐Seq data via Gaussian copulas. Stat.
+
+     - Leon-Novelo, L., Fuentes, C., & Emerson, S. (2015). Bayesian Estimation of Negative Binomial Parameters with Applications to RNA-Seq Data. arXiv preprint arXiv:1512.00475.
+
+     - Chen, Y., Lun, A. T., & Smyth, G. K. (2014). Differential expression analysis of complex RNA-seq experiments using edgeR. In Statistical analysis of next generation sequencing data (pp. 51-74). Springer International Publishing.
+
+     - Anders, S., & Huber, W. (2010). Differential expression analysis for sequence count data. Genome biology, 11(10), R106.
+
+—————————————————————————————————————————————————————————————————————————————————
+  
+    (c) Methods used in Single-Cell RNA-sequencing
+
+     - Ding, B., Zheng, L., Zhu, Y., Li, N., Jia, H., Ai, R., ... & Wang, W. (2015). Normalization and noise reduction for single cell RNA-seq experiments. Bioinformatics, btv122.
+
+     - Chen, H. I. H., Jin, Y., Huang, Y., & Chen, Y. (2016). Detection of high variability in gene expression from single-cell RNA-seq profiling. BMC genomics, 17(7), 508.
+
+     - Elowitz, M. B., Levine, A. J., Siggia, E. D., & Swain, P. S. (2002). Stochastic gene expression in a single cell. Science, 297(5584), 1183-1186.
+
+     - Tang, F., Barbacioru, C., Nordman, E., Li, B., Xu, N., Bashkirov, V. I., ... & Surani, M. A. (2010). RNA-Seq analysis to capture the transcriptome landscape of a single cell. Nature protocols, 5(3), 516-535.
+
+     - Munsky, B., Neuert, G., & van Oudenaarden, A. (2012). Using gene expression noise to understand gene regulation. Science, 336(6078), 183-187.
+
+     - Zhou, Y., Lin, N., & Zhang, B. (2014). An iteration normalization and test method for differential expression analysis of RNA-seq data. BioData mining, 7(1), 15.
+
+     - Robinson, M. D., & Oshlack, A. (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome biology, 11(3), R25.
+
+     - Bullard, J. H., Purdom, E., Hansen, K. D., & Dudoit, S. (2010). Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments. BMC bioinformatics, 11(1), 94.
+
+     - Anders, S., & Huber, W. (2010). Differential expression analysis for sequence count data. Genome biology, 11(10), R106.
+
+     - Delmans, M., & Hemberg, M. (2016). Discrete distributional differential expression (D 3 E)-a tool for gene expression analysis of single-cell RNA-seq data. BMC bioinformatics, 17(1), 110.
+
+     - Lun, A. T., Bach, K., & Marioni, J. C. (2016). Pooling across cells to normalize single-cell RNA sequencing data with many zero counts. Genome biology, 17(1), 75.
+
+     - Grün, D., Kester, L., & Van Oudenaarden, A. (2014). Validation of noise models for single-cell transcriptomics. Nature methods, 11(6), 637-640.
+
+     - Brennecke, P., Anders, S., Kim, J. K., Kołodziejczyk, A. A., Zhang, X., Proserpio, V., ... & Heisler, M. G. (2013). Accounting for technical noise in single-cell RNA-seq experiments. Nature methods, 10(11), 1093-1095.
+
+     - Kharchenko, P. V., Silberstein, L., & Scadden, D. T. (2014). Bayesian approach to single-cell differential expression analysis. Nature methods, 11(7), 740-742.
+
+     - Ding, B., Zheng, L., & Wang, W. (2017). Assessment of single cell RNA-seq normalization methods. G3: Genes, Genomes, Genetics, g3-117.
+
+     - Bacher, R., Chu, L. F., Leng, N., Gasch, A. P., Thomson, J. A., Stewart, R. M., ... & Kendziorski, C. (2017). SCnorm: robust normalization of single-cell RNA-seq data. Nature Methods.
+
+     - Vallejos, C. A., Marioni, J. C., & Richardson, S. (2015). BASiCS: Bayesian analysis of single-cell sequencing data. PLoS Comput Biol, 11(6), e1004333.
+
+     - Vallejos, C. A., Risso, D., Scialdone, A., Dudoit, S., & Marioni, J. C. (2016). Normalizing single-cell RNA sequencing data: challenges and opportunities. Nature Methods.
+
+     - McDavid, A., Dennis, L., Danaher, P., Finak, G., Krouse, M., Wang, A., ... & Gottardo, R. (2014). Modeling bi-modality improves characterization of cell cycle on gene expression in single cells. PLoS Comput Biol, 10(7), e1003696.
+
+     - McDavid, A., Finak, G., Chattopadyay, P. K., Dominguez, M., Lamoreaux, L., Ma, S. S., ... & Gottardo, R. (2013). Data exploration, quality control and testing in single-cell qPCR-based gene expression experiments. Bioinformatics, 29(4), 461-467.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (d) Tools for analysis
+
+     - Andrews, S. (2010). FastQC: a quality control tool for high throughput sequence data.
+
+     - Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: a flexible trimmer for Illumina sequence data. Bioinformatics, btu170.
+
+     - Langmead, B., & Salzberg, S. L. (2012). Fast gapped-read alignment with Bowtie 2. Nature methods, 9(4), 357-359.
+
+     - Langmead, B., Trapnell, C., Pop, M., & Salzberg, S. L. (2009). Ultrafast and memory-efficient alignment of short DNA sequences to the human genome. Genome biology, 10(3), R25.
+ 
+     - Li, H., Handsaker, B., Wysoker, A., Fennell, T., Ruan, J., Homer, N., ... & Durbin, R. (2009). The sequence alignment/map format and SAMtools. Bioinformatics, 25(16), 2078-2079.
+
+     - Pertea, M., Pertea, G. M., Antonescu, C. M., Chang, T. C., Mendell, J. T., & Salzberg, S. L. (2015). StringTie enables improved reconstruction of a transcriptome from RNA-seq reads. Nature biotechnology, 33(3), 290-295.
+
+     - Jiang, P., Thomson, J. A., & Stewart, R. (2016). Quality control of single-cell RNA-seq by SinQC. Bioinformatics, 32(16), 2514-2516.
+
+     - Katayama, S., Töhönen, V., Linnarsson, S., & Kere, J. (2013). SAMstrt: statistical test for differential expression in single-cell transcriptome with spike-in normalization. Bioinformatics, 29(22), 2943-2945.
+
+     - Love, M. I., Huber, W., & Anders, S. (2014). Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome biology, 15(12), 550.
+
+     - Chang, W., Cheng, J., Allaire, J., Xie, Y., & McPherson, J. (2015). Shiny: web application framework for R. R package version 0.11, 1.
+
+     - Trapnell, C., Roberts, A., Goff, L., Pertea, G., Kim, D., Kelley, D. R., ... & Pachter, L. (2012). Differential gene and transcript expression analysis of RNA-seq experiments with TopHat and Cufflinks. Nature protocols, 7(3), 562-578.
+
+     - Trapnell, C., Cacchiarelli, D., Grimsby, J., Pokharel, P., Li, S., Morse, M., ... & Rinn, J. L. (2014). The dynamics and regulators of cell fate decisions are revealed by pseudotemporal ordering of single cells. Nature biotechnology, 32(4), 381-386.
+
+     - McCarthy, D. J., Campbell, K. R., Lun, A. T., & Wills, Q. F. (2016). scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R. bioRxiv, 069633.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (d) General reviews
+
+     - Pavlopoulos, G. A., Malliarakis, D., Papanikolaou, N., Theodosiou, T., Enright, A. J., & Iliopoulos, I. (2015). Visualizing genome and systems biology: technologies, tools, implementation techniques and trends, past, present and future. GigaScience, 4(1), 38.
+
+     - Trapnell, C. (2015). Defining cell types and states with single-cell genomics. Genome research, 25(10), 1491-1498.
+
+     - Vera, G., Jansen, R. C., & Suppi, R. L. (2008). R/parallel–speeding up bioinformatics analysis with R. BMC bioinformatics, 9(1), 390.
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+
+(III) Generalities about databases and biology
+
+    (a) Articles
+
+     - Mungall, C. J., Emmert, D. B., & FlyBase Consortium. (2007). A Chado case study: an ontology-based modular schema for representing genome-associated biological information. Bioinformatics, 23(13), i337-i346.
+
+     - Khatri, P., & Drăghici, S. (2005). Ontological analysis of gene expression data: current tools, limitations, and open problems. Bioinformatics, 21(18), 3587-3595.
+
+     - Petryszak, R., Burdett, T., Fiorelli, B., Fonseca, N. A., Gonzalez-Porta, M., Hastings, E., ... & McMurry, J. (2014). Expression Atlas update—a database of gene and transcript expression from microarray-and sequencing-based functional genomics experiments. Nucleic acids research, 42(D1), D926-D932.
+
+     (b) Websites
+
+      - http://tintori.bio.unc.edu
+
+      - http://ghost.zool.kyoto-u.ac.jp
+
+      - https://www.ebi.ac.uk/gxa/home
+
+      - https://www.aniseed.cnrs.fr
+
+      - http://gene-regulation.com
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+
+(IV) Clustering and biology
+
+    (a) For micro-arrays
+
+     - Do, J. H., & Choi, D. (2008). Clustering approaches to identifying gene expression patterns from DNA microarray data. Molecules and cells, 25(2), 279.
+
+     - Dabney, A. R. (2006). ClaNC: point-and-click software for classifying microarrays to nearest centroids. Bioinformatics, 22(1), 122-123.
+
+     - Dabney, A. R. (2005). Classification of microarrays to nearest centroids. Bioinformatics, 21(22), 4148-4154.
+
+     - Grotkjær, T., Winther, O., Regenberg, B., Nielsen, J., & Hansen, L. K. (2006). Robust multi-scale clustering of large DNA microarray datasets with the consensus algorithm. Bioinformatics, 22(1), 58-67.
+
+     - Dougherty, E. R., Barrera, J., Brun, M., Kim, S., Cesar, R. M., Chen, Y., ... & Trent, J. M. (2002). Inference from clustering with application to gene-expression microarrays. Journal of Computational Biology, 9(1), 105-126.
+
+     - Jörnsten, R., & Yu, B. (2003). Simultaneous gene clustering and subset selection for sample classification via MDL. Bioinformatics, 19(9), 1100-1109.
+
+     - Filippone, M., Masulli, F., & Rovetta, S. (2005, September). Unsupervised gene selection and clustering using simulated annealing. In International Workshop on Fuzzy Logic and Applications (pp. 229-235). Springer Berlin Heidelberg.
+
+     - Eisen, M. B., Spellman, P. T., Brown, P. O., & Botstein, D. (1998). Cluster analysis and display of genome-wide expression patterns. Proceedings of the National Academy of Sciences, 95(25), 14863-14868.
+
+     - Monti, S., Tamayo, P., Mesirov, J., & Golub, T. (2003). Consensus clustering: a resampling-based method for class discovery and visualization of gene expression microarray data. Machine learning, 52(1), 91-118.
+
+     - Carmona-Saez, P., Pascual-Marqui, R. D., Tirado, F., Carazo, J. M., & Pascual-Montano, A. (2006). Biclustering of gene expression data by non-smooth non-negative matrix factorization. BMC bioinformatics, 7(1), 78.
+
+     - Yeung, K. Y., & Ruzzo, W. L. (2001). Principal component analysis for clustering gene expression data. Bioinformatics, 17(9), 763-774.
+
+     - Xu, Y., Olman, V., & Xu, D. (2002). Clustering gene expression data using a graph-theoretic approach: an application of minimum spanning trees. Bioinformatics, 18(4), 536-545.
+
+     - Barash, Y., & Friedman, N. (2002). Context-specific Bayesian clustering for gene expression data. Journal of Computational Biology, 9(2), 169-191.
+
+     - Jaskowiak, P. A., Campello, R. J., & Costa, I. G. (2014). On the selection of appropriate distances for gene expression data clustering. BMC bioinformatics, 15(2), S2.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (b) For bulk RNA-sequencing
+
+    - Tseng, G. C. (2007). Penalized and weighted K-means for clustering with scattered objects and prior information in high-throughput biological data. Bioinformatics, 23(17), 2247-2255.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (c) For Single-Cell RNA sequencing
+
+     - Zhu, X., Ching, T., Pan, X., Weissman, S. M., & Garmire, L. (2017). Detecting heterogeneity in single-cell RNA-Seq data by non-negative matrix factorization. PeerJ, 5, e2888.
+
+     - Shao, C., & Höfer, T. (2016). Robust classification of single-cell transcriptome data by nonnegative matrix factorization. Bioinformatics, btw607.
+
+     - Kiselev, V. Y., Kirschner, K., Schaub, M. T., Andrews, T., Yiu, A., Chandra, T., ... & Hemberg, M. (2016). SC3-consensus clustering of single-cell RNA-Seq data. bioRxiv, 036558.
+
+     - Pettit, G., Olivier J.-B.,  (2014) Spatial analysis of complex biological tissues from single cell gene expression data https://www.ebi.ac.uk/sites/ebi.ac.uk/files/shared/documents/phdtheses/Pettit_thesis.pdf
+
+     - Ntranos, V., Kamath, G. M., Zhang, J. M., Pachter, L., & David, N. T. (2016). Fast and accurate single-cell RNA-seq analysis by clustering of transcript-compatibility counts. Genome biology, 17(1), 112.
+
+     - Ilicic, T., Kim, J. K., Kolodziejczyk, A. A., Bagger, F. O., McCarthy, D. J., Marioni, J. C., & Teichmann, S. A. (2016). Classification of low quality cells from single-cell RNA-seq data. Genome biology, 17(1), 29.
+
+     - Grün, D., Lyubimova, A., Kester, L., Wiebrands, K., Basak, O., Sasaki, N., ... & van Oudenaarden, A. (2015). Single-cell messenger RNA sequencing reveals rare intestinal cell types. Nature, 525(7568), 251-255.
+
+     - Sun, Z., Wang, T., Deng, K., Wang, X. F., Lafyatis, R., Ding, Y., ... & Chen, W. (2017). DIMM-SC: A Dirichlet mixture model for clustering droplet-based single cell transcriptomic data. arXiv preprint arXiv:1704.02007.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (d) Other types of data
+
+     - Sauwen, N., Sima, D. M., Van Cauter, S., Veraart, J., Leemans, A., Maes, F., ... & Van Huffel, S. (2015). Hierarchical non‐negative matrix factorization to characterize brain tumor heterogeneity using multi‐parametric MRI. NMR in Biomedicine, 28(12), 1599-1624.
+
+     - Gao, Y., & Church, G. (2005). Improving molecular cancer class discovery through sparse non-negative matrix factorization. Bioinformatics, 21(21), 3970-3975.
+
+     - Törönen, P. (2004). Analysis of gene expression data using clustering and functional classifications. University of Kuopio.
+
+     - Latch, E. K., Dharmarajan, G., Glaubitz, J. C., & Rhodes, O. E. (2006). Relative performance of Bayesian clustering software for inferring population substructure and individual assignment at low levels of population differentiation. Conservation Genetics, 7(2), 295-302.
+
+     - Friedman, N., Linial, M., Nachman, I., & Pe'er, D. (2000). Using Bayesian networks to analyze expression data. Journal of computational biology, 7(3-4), 601-620.
+
+     - Quintana, F. A., & Iglesias, P. L. (2003). Bayesian clustering and product partition models. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 65(2), 557-574.
+
+     - Peng, H., Long, F., Eisen, M. B., & Myers, E. W. (2006, April). Clustering gene expression patterns of fly embryos. In Biomedical Imaging: Nano to Macro, 2006. 3rd IEEE International Symposium on (pp. 1144-1147). IEEE.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (e) Validation methods
+
+     - Handl, J., Knowles, J., & Kell, D. B. (2005). Computational cluster validation in post-genomic data analysis. Bioinformatics, 21(15), 3201-3212.
+
+     - Gat-Viks, I., Sharan, R., & Shamir, R. (2003). Scoring clustering solutions by their biological relevance. Bioinformatics, 19(18), 2381-2389.
+
+     - Datta, S., & Datta, S. (2003). Comparisons and validation of statistical clustering techniques for microarray gene expression data. Bioinformatics, 19(4), 459-466.
+
+     - Gibbons, F. D., & Roth, F. P. (2002). Judging the quality of gene expression-based clustering methods using gene annotation. Genome research, 12(10), 1574-1581.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (f) Feature selection
+
+     - Boratyn, G. M., Datta, S., & Datta, S. (2007). Incorporation of biological knowledge into distance for clustering genes. Bioinformation, 1(10), 396-405.
+
+     - Chen, Y., Wang, L., Li, L., Zhang, H., & Yuan, Z. (2016). Informative gene selection and the direct classification of tumors based on relative simplicity. BMC bioinformatics, 17(1), 44.
+
+     - Liu, B., Wan, C., & Wang, L. (2006). An efficient semi-unsupervised gene selection method via spectral biclustering. IEEE Transactions on nanobioscience, 5(2), 110-114.
+
+     - Liu, J., Iba, H., & Ishizuka, M. (2001). Selecting informative genes with parallel genetic algorithms in tissue classification. Genome Informatics, 12, 14-23.
+
+     - Mohamad, M. S., Omatu, S., Deris, S., & Yoshioka, M. (2010, January). A Three-Stage Method to Select Informative Genes from Gene Expression Data in Classifying Cancer Classes. In Intelligent Systems, Modelling and Simulation (ISMS), 2010 International Conference on (pp. 158-163). IEEE.
+
+     - Varshavsky, R., Gottlieb, A., Linial, M., & Horn, D. (2006). Novel unsupervised feature filtering of biological data. Bioinformatics, 22(14), e507-e513.
+
+     - Ding, C. H. (2003). Unsupervised feature selection via two-way ordering in gene expression analysis. Bioinformatics, 19(10), 1259-1266.
+
+     - Akutsu, T., & Miyano, S. (2006). Selecting informative genes for cancer classification using gene expression data. In Computational and Statistical Approaches to Genomics (pp. 75-88). Springer US.
+
+     - Sondberg-Madsen, N., Thomsen, C., & Pena, J. M. (2003, July). Unsupervised feature subset selection. In Proceedings of the Workshop on Probabilistic Graphical Models for Classification (Vol. 82, p. 71).
+
+     - Deng, L., Pei, J., Ma, J., & Lee, D. L. (2004, August). A rank sum test method for informative gene discovery. In Proceedings of the tenth ACM SIGKDD international conference on Knowledge discovery and data mining (pp. 410-419). ACM.
+
+     - Li, J., & Tibshirani, R. (2013). Finding consistent patterns: a nonparametric approach for identifying differential expression in RNA-Seq data. Statistical methods in medical research, 22(5), 519-536.
+
+    - Guyon, I., & Elisseeff, A. (2003). An introduction to variable and feature selection. Journal of machine learning research, 3(Mar), 1157-1182.
+
+    - Hira, Z. M., & Gillies, D. F. (2015). A review of feature selection and feature extraction methods applied on microarray data. Advances in bioinformatics, 2015.
+
+    - Jirapech-Umpai, T., & Aitken, S. (2005). Feature selection and classification for microarray data analysis: Evolutionary methods for identifying predictive genes. BMC bioinformatics, 6(1), 148.
+
+    - LATKOWSKI, T., & OSOWSKI, S. (2014). Feature selection methods in application to gene expression: autism data. Przegląd Elektrotechniczny, 90(8), 199-204.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (g) Reviews
+
+     - D'haeseleer, P. (2005). How does gene expression clustering work?. Nature biotechnology, 23(12), 1499.
+
+     - Costa, I. G., de Carvalho, F. D. A., & de Souto, M. C. (2004). Comparative analysis of clustering methods for gene expression time course data. Genetics and Molecular Biology, 27(4), 623-631.
+
+     - Jiang, D., Tang, C., & Zhang, A. (2004). Cluster analysis for gene expression data: A survey. IEEE Transactions on knowledge and data engineering, 16(11), 1370-1386.
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+
+(V) Interesting things
+
+    (a) Logics
+
+    - Cintula, Petr, Fermüller, Christian G. and Noguera, Carles, "Fuzzy Logic", The Stanford Encyclopedia of Philosophy (Winter 2016 Edition), Edward N. Zalta (ed.), URL = <https://plato.stanford.edu/archives/win2016/entries/logic-fuzzy/>.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (b) Information Theory
+
+    - Wang, M., & Sha, F. (2011). Information Theoretical Clustering via Semidefinite Programming. In AISTATS (pp. 761-769).
+
+    - Kasturi, J., Acharya, R., & Ramanathan, M. (2003). An information theoretic approach for analyzing temporal patterns of gene expression. Bioinformatics, 19(4), 449-458.
+
+    - Lin, D. (1998, July). An information-theoretic definition of similarity. In ICML (Vol. 98, No. 1998, pp. 296-304).
+
+    - Davis, J. V., Kulis, B., Jain, P., Sra, S., & Dhillon, I. S. (2007, June). Information-theoretic metric learning. In Proceedings of the 24th international conference on Machine learning (pp. 209-216). ACM.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (c) Clustering theory
+
+     - Von Luxburg, U., & Ben-David, S. (2005, February). Towards a statistical theory of clustering. In Pascal workshop on statistics and optimization of clustering (pp. 20-26).
+
+     - Zhong, C., Miao, D., & Wang, R. (2010). A graph-theoretical clustering method based on two rounds of minimum spanning trees. Pattern Recognition, 43(3), 752-766.
+
+     - Brucker, P. (1978). On the complexity of clustering problems. In Optimization and operations research (pp. 45-54). Springer Berlin Heidelberg.
+
+     - Strauss, T., & von Maltitz, M. J. (2017). Generalising Ward’s Method for Use with Manhattan Distances. PloS one, 12(1), e0168288.
+
+     - Kleinberg, J. (2002, December). An impossibility theorem for clustering. In NIPS (Vol. 15, pp. 463-470).
+
+     - Jia, Y. W. Y., & Turk, C. H. M. (2004). Fisher non-negative matrix factorization for learning local features. In Proc. Asian Conf. on Comp. Vision (pp. 27-30).
+
+     - Jain, A. K., & Dubes, R. C. (1988). Algorithms for clustering data. Prentice-Hall, Inc..
+
+     - http://www.daniel-wiechmann.net/downloads/cluster_%20analysis.pdf
+
+     - Sugar, C. A., & James, G. M. (2003). Finding the number of clusters in a dataset: An information-theoretic approach. Journal of the American Statistical Association, 98(463), 750-763.
+
+     - Rose, K. (1998). Deterministic annealing for clustering, compression, classification, regression, and related optimization problems. Proceedings of the IEEE, 86(11), 2210-2239.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (d) Optimization
+
+    - Wang, J. J. Y., & Gao, X. (2015). Max–min distance nonnegative matrix factorization. Neural Networks, 61, 75-84.
+
+    - Ding, C., He, X., & Simon, H. D. (2005, April). On the equivalence of nonnegative matrix factorization and spectral clustering. In Proceedings of the 2005 SIAM International Conference on Data Mining (pp. 606-610). Society for Industrial and Applied Mathematics.
+
+    - Do, C. B., & Batzoglou, S. (2008). What is the expectation maximization algorithm?. Nature biotechnology, 26(8), 897.
+
+    - Nash, J. C. (2014). On best practice optimization methods in R. Journal of Statistical Software, 60(2), 1-14.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (e) Visualization
+
+    - Maaten, L. V. D., & Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9(Nov), 2579-2605.
+
+    - http://distill.pub/2016/misread-tsne/
+
+    - https://www.analyticsvidhya.com/blog/2017/01/t-sne-implementation-r-python/
+
+    - Bernhardt, J., Funke, S., Hecker, M., & Siebourg, J. (2009, June). Visualizing Gene Expression Data via Voronoi Treemaps. In ISVD (pp. 233-241).
+
+    - Dey, K. K., Hsiao, C. J., & Stephens, M. (2017). Visualizing the structure of RNA-seq expression data using grade of membership models. PLoS genetics, 13(3), e1006599.
+
+    - Yotsukura, S., Nomura, S., Aburatani, H., & Tsuda, K. (2016). CellTree: an R/bioconductor package to infer the hierarchical structure of cell populations from single-cell RNA-seq data. BMC bioinformatics, 17(1), 363.
+
+    - Bruckner, S., Miksch, S., & Pfister, H. (2012). Computing Voronoi Treemaps.
+
+    - Santamaría, R., & Pierre, P. (2012). Voronto: mapper for expression data to ontologies. Bioinformatics, 28(17), 2281-2282.
+
+    - Tsafrir, D., Tsafrir, I., Ein-Dor, L., Zuk, O., Notterman, D. A., & Domany, E. (2005). Sorting points into neighborhoods (SPIN): data analysis and visualization by ordering distance matrices. Bioinformatics, 21(10), 2301-2308.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (f) Statistics
+
+    - Scott, A., & Wu, C. F. (1981). On the asymptotic distribution of ratio and regression estimators. Journal of the American Statistical Association, 76(373), 98-102.
+
+    - https://www.biostars.org/p/84445/
+
+    - https://www.biostars.org/p/6028/
+
+    - https://www.biostars.org/p/103943/
+
+    - Pachter, L. (2011). Models for transcript quantification from RNA-Seq. arXiv preprint arXiv:1104.3889.
+
+    - http://nextgenseek.com/2014/06/bayesian-approach-to-single-cell-rna-seq-differential-expression-analysis/
+
+    - BEDOUI, R., & DBABIS, M. B. (2008). Copules et mesures du risque bidimensionnelles: application pratique aux hedge funds. université Paris X.
+
+    - PLANCHET, F. (2010). Modèles financiers et analyses de risque dynamiques en assurance. Modèle de Vasicek généralisé: présentation et utilisation en assurance, Support de cours, 2011.
+
+    - Bouyé, E., Durrleman, V., Nikeghbali, A., Riboulet, G., & Roncalli, T. (2000). Copulas for finance-a reading guide and some applications.
+ 
+    - https://datascienceplus.com/modelling-dependence-with-copulas/
+
+    - Kole, E., Koedijk, K., & Verbeek, M. (2007). Selecting copulas for risk management. Journal of Banking & Finance, 31(8), 2405-2423.
+
+    - http://datavoreconsulting.com/programming-tips/count-data-glms-choosing-poisson-negative-binomial-zero-inflated-poisson/
+
+    - O’hara, R. B., & Kotze, D. J. (2010). Do not log‐transform count data. Methods in Ecology and Evolution, 1(2), 118-122.
+
+    - Hu, M. C., Pavlicova, M., & Nunes, E. V. (2011). Zero-inflated and hurdle models of count data with extra zeros: examples from an HIV-risk reduction intervention trial. The American journal of drug and alcohol abuse, 37(5), 367-375.
+
+    - Rose, C. E., Martin, S. W., Wannemuehler, K. A., & Plikaytis, B. D. (2006). On the use of zero-inflated and hurdle models for modeling vaccine adverse event count data. Journal of biopharmaceutical statistics, 16(4), 463-481.
+
+    - http://data.library.virginia.edu/getting-started-with-hurdle-models/
+
+    - https://statisticalhorizons.com/zero-inflated-models
+
+    - Chen, T. (2006). Modelling with parameter mixture copulas. http://bla.nointrigue.com/thesis/Thesis/04_Ch2_Copul.pdf. Accessed on 06-19-2017.
+
+    - http://www.columbia.edu/cu/bnet/StatisticalFallacy_July2014.pdf
+
+    - http://www.soc.iastate.edu/sapp/soc512LogisticNotes.pdf
+
+    - http://schatz.sju.edu/multivar/guide/logistic.pdf
+
+    - Mitchell, T. (2016). Generative and discriminative classifiers: naive Bayes and logistic regression, 2005. Manuscript available at http://www. cs. cm. edu/~ tom/NewChapters. html.
+
+    - Ng, A. Y., & Jordan, M. I. (2002). On discriminative vs. generative classifiers: A comparison of logistic regression and naive bayes. Advances in neural information processing systems, 2, 841-848.
+
+    - Garson, G. D. (2012). Testing statistical assumptions. Asheboro, NC: Statistical Associates Publishing.
+
+    - Fraley, C., & Raftery, A. E. (2002). Model-based clustering, discriminant analysis, and density estimation. Journal of the American statistical Association, 97(458), 611-631.
+
+    - Fraley, C., & Raftery, A. E. (2007). Bayesian regularization for normal mixture estimation and model-based clustering. Journal of Classification, 24(2), 155-181.
+
+    - Smith, T. J., & McKenna, C. M. (2013). A comparison of logistic regression pseudo R2 indices. Multiple Linear Regression Viewpoints, 39(2), 17-26.
+
+    - Aslan, B., & Zech, G. (2002). Comparison of different goodness-of-fit tests. arXiv preprint math/0207300.
+
+    - Panchenko, V. (2005). Goodness-of-fit test for copulas. Physica A: Statistical Mechanics and its Applications, 355(1), 176-182.
+
+    - Genest, C., Rémillard, B., & Beaudoin, D. (2009). Goodness-of-fit tests for copulas: A review and a power study. Insurance: Mathematics and economics, 44(2), 199-213.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (g) Comparison of clustering algorithms
+
+    - Yin, L., Huang, C. H., & Ni, J. (2006). Clustering of gene expression data: performance and similarity analysis. BMC bioinformatics, 7(4), S19.
+
+    - Datta, S., & Datta, S. (2006). Methods for evaluating clustering algorithms for gene expression data using a reference set of functional classes. BMC bioinformatics, 7(1), 397.
+
+    - Eren, K., Deveci, M., Küçüktunç, O., & Çatalyürek, Ü. V. (2013). A comparative analysis of biclustering algorithms for gene expression data. Briefings in bioinformatics, 14(3), 279-292.
+
+    - Yona, G., Dirks, W., & Rahman, S. (2009). Comparing algorithms for clustering of expression data: how to assess gene clusters. Computational Systems Biology, 479-509.
+
+    - Kafieh, R., & Mehridehnavi, A. (2013). a comprehensive comparison of different clustering methods for reliability analysis of microarray data. Journal of medical signals and sensors, 3(1), 22.
+
+    - Wagner, S., & Wagner, D. (2007). Comparing clusterings: an overview. Karlsruhe: Universität Karlsruhe, Fakultät für Informatik.
+
+    - Meilă, M. (2007). Comparing clusterings—an information based distance. Journal of multivariate analysis, 98(5), 873-895.
+
+    - Santos, J., & Embrechts, M. (2009). On the use of the adjusted rand index as a metric for evaluating supervised classification. Artificial neural networks–ICANN 2009, 175-184.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (h) Mathematics
+
+    - Nelsen, R. B. (2003, September). Properties and applications of copulas: A brief survey. In Proceedings of the First Brazilian Conference on Statistical Modeling in Insurance and Finance,(Dhaene, J., Kolev, N., Morettin, PA (Eds.)), University Press USP: Sao Paulo (pp. 10-28).
+
+    - Cameron, A. C., & Trivedi, P. K. (2013). Regression analysis of count data (Vol. 53). Cambridge university press.
+
+    - Liu, X., & Daniels, M. J. (2006). A new algorithm for simulating a correlation matrix based on parameter expansion and reparameterization. Journal of Computational and Graphical Statistics, 15(4), 897-914.
+
+    - Zhang, X., Boscardin, W. J., & Belin, T. R. (2006). Sampling correlation matrices in Bayesian models with correlated latent variables. Journal of Computational and Graphical Statistics, 15(4), 880-896.
+
+    - Salojärvi, J., Puolamäki, K., & Kaski, S. (2005, August). Expectation maximization algorithms for conditional likelihoods. In Proceedings of the 22nd international conference on Machine learning (pp. 752-759). ACM.
+
+    - Beale, E. M., & Little, R. J. (1975). Missing values in multivariate analysis. Journal of the Royal Statistical Society. Series B (Methodological), 129-145.
+
+    - Hee Lee, E. (2014). Copula analysis of correlated counts. In Bayesian Model Comparison (pp. 325-348). Emerald Group Publishing Limited.
+
+    - Scaillet, O., Charpentier, A., & Fermanian, J. D. (2007). The estimation of copulas: theory and practice.
+
+    - Silva, R. D. S., & Lopes, H. F. (2008). Copula, marginal distributions and model selection: a Bayesian note. Statistics and Computing, 18(3), 313-320.
+
+    - Sklar, M. (1959). Fonctions de répartition à n dimensions et leurs marges. Université Paris 8.
+
+    - Pitt, M., Chan, D., & Kohn, R. (2006). Efficient Bayesian inference for Gaussian copula regression models. Biometrika, 537-554.
+
+    - Carley, H., & Taylor, M. D. (2002). A new proof of Sklar’s theorem. In Distributions with given marginals and statistical modelling (pp. 29-34). Springer Netherlands.
+
+    - Ilienko, A. (2013). Continuous counterparts of Poisson and binomial distributions and their properties. arXiv preprint arXiv:1303.5990.
+
+    - Chandra, N. K., & Roy, D. (2012). A continuous version of the negative binomial distribution. Statistica, 72(1), 81.
+
+    - Abid, S. H., & Mohammed, S. H. (2016). On The Continuous Poisson Distribution. International Journal of Data Envelopment Analysis and* Operations Research*, 2(1), 7-15.
+
+    - Nelsen, Roger B. "Properties and applications of copulas: A brief survey." Proceedings of the First Brazilian Conference on Statistical Modeling in Insurance and Finance,(Dhaene, J., Kolev, N., Morettin, PA (Eds.)), University Press USP: Sao Paulo. 2003.
+
+    - Gijbels, Irène, and Klaus Herrmann. "On the distribution of sums of random variables with copula-induced dependence." Insurance: Mathematics and Economics 59 (2014): 27-44.
+
+    - Ko, Bangwon, and Qihe Tang. "Sums of dependent nonnegative random variables with subexponential tails." Journal of Applied Probability 45.01 (2008): 85-94.
+
+    - Vrac, M., Billard, L., Diday, E., & Chédin, A. (2012). Copula analysis of mixture models. Computational Statistics, 1-31.
+
+    - Longla, M. (2015). On mixtures of copulas and mixing coefficients. Journal of Multivariate Analysis, 139, 259-265.
+
+    - Lindner, A. M., & Szimayer, A. (2005). A limit theorem for copulas (No. 433). Discussion paper//Sonderforschungsbereich 386 der Ludwig-Maximilians-Universit‰ t M¸ nchen.
+
+    - Yu, D., Huber, W., & Vitek, O. (2013). Shrinkage estimation of dispersion in Negative Binomial models for RNA-seq experiments with small sample size. Bioinformatics, 29(10), 1275-1282.
+
+    - Bonafede, E., Picard, F., Robin, S., & Viroli, C. (2016). Modeling overdispersion heterogeneity in differential expression analysis using mixtures. Biometrics, 72(3), 804-814.
+
+    - Inouye, D. I., Yang, E., Allen, G. I., & Ravikumar, P. (2017). A review of multivariate distributions for count data derived from the Poisson distribution. Wiley Interdisciplinary Reviews: Computational Statistics, 9(3).
+
+    - Han, Z., & De Oliveira, V. (2016). On the Correlation Structure of Gaussian Copula Models for Geostatistical Count Data. Australian & New Zealand Journal of Statistics, 58(1), 47-69.
+
+    - Guenther, W. C. (1972). A simple approximation to the negative binomial (and regular binomial). Technometrics, 14(2), 385-389.
+
+    - Best, D. J., & Gipps, P. G. (1974). An improved gamma approximation to the negative binomial. Technometrics, 16(4), 621-624.
+
+    - Xue‐Kun Song, P. (2000). Multivariate dispersion models generated from Gaussian copula. Scandinavian Journal of Statistics, 27(2), 305-320.
+
+    - De Oliveira, V. (2013). Hierarchical Poisson models for spatial count data. Journal of Multivariate Analysis, 122, 393-408.
+
+    - De Oliveira, V. (2003). A note on the correlation structure of transformed Gaussian random fields. Australian & New Zealand Journal of Statistics, 45(3), 353-366.
+
+    - Abrahamsen, P. (1997). A review of Gaussian random fields and correlation functions. Norsk Regnesentral/Norwegian Computing Center.
+
+    - Arbenz, P. (2013). Bayesian Copulae Distributions, with Application to Operational Risk Management--Some Comments. Methodology and Computing in Applied Probability, 15(1), 105.
+
+    - Genz, A. (1992). Numerical computation of multivariate normal probabilities. Journal of computational and graphical statistics, 1(2), 141-149.
+
+    - Chiu, J., & Demanet, L. (2012). Matrix probing and its conditioning. SIAM Journal on Numerical Analysis, 50(1), 171-193.
+
+    - Schäfer, J., & Strimmer, K. (2005). A shrinkage approach to large-scale covariance matrix estimation and implications for functional genomics. Statistical applications in genetics and molecular biology, 4(1).
+
+    - Chen, Y., Wiesel, A., & Hero, A. O. (2009, April). Shrinkage estimation of high dimensional covariance matrices. In Acoustics, Speech and Signal Processing, 2009. ICASSP 2009. IEEE International Conference on (pp. 2937-2940). IEEE.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (i) Model fitting
+
+    - Hennig, C. (2010). Methods for merging Gaussian mixture components. Advances in data analysis and classification, 4(1), 3-34.
+
+    - Silva, R., & Gramacy, R. B. (2009). MCMC methods for Bayesian mixtures of copulas. In International Conference on Artificial Intelligence and Statistics (pp. 512-519).
+
+    - Kirshner, S. (2008). Learning with tree-averaged densities and distributions. In Advances in Neural Information Processing Systems (pp. 761-768).
+
+    - Ma, J., Sun, Z. Q., Chen, S., & Liu, H. H. (2012). Dependence tree structure estimation via copula. International Journal of Automation and Computing, 9(2), 113-121.
+
+    - Lopez-Paz, D., Hernández-Lobato, J. M., & Ghahramani, Z. (2013). Gaussian process vine copulas for multivariate dependence. In Proceedings of the 30th International Conference on Machine Learning (ICML-13) (pp. 10-18).
+
+    - Embrechts, P., & Hofert, M. (2013). Statistical inference for copulas in high dimensions: A simulation study. Astin Bulletin, 43(02), 81-95.
+
+    - Kim, D., Kim, J. M., Liao, S. M., & Jung, Y. S. (2013). Mixture of D-vine copulas for modeling dependence. Computational Statistics & Data Analysis, 64, 1-19.
+
+    - Kojadinovic, I., Yan, J., & Holmes, M. (2011). Fast large-sample goodness-of-fit tests for copulas. Statistica Sinica, 841-871.
+
+    - Kework, L. I. (2012). Copula Modeling Dependence with Continuous Margins with Application by Using the Package R. Journal of Humanity Sciences, (52).
+
+    - Masarotto, G., & Varin, C. (2011, August). Gaussian copula regression using R. In The R User Conference, useR! 2011 August 16-18 2011 University of Warwick, Coventry, UK (p. 95).
+
+    - Andreassen, C. M. (2013). Models and inference for correlated count data (Doctoral dissertation, Department of Mathematics, Aarhus University).
+
+    - Nikoloulopoulos, A. K. (2013). Copula-based models for multivariate discrete response data. In Copulae in Mathematical and Quantitative Finance (pp. 231-249). Springer, Berlin, Heidelberg.
+
+    - Yan, J. (2006). Multivariate modeling with copulas and engineering applications. In Springer Handbook of Engineering Statistics (pp. 973-990). Springer London.
+
+    - Stitou, Y., Lasmar, N., & Berthoumieu, Y. (2009, April). Copulas based multivariate gamma modeling for texture classification. In Acoustics, Speech and Signal Processing, 2009. ICASSP 2009. IEEE International Conference on (pp. 1045-1048). IEEE.
+
+    - Murray, J. S., Dunson, D. B., Carin, L., & Lucas, J. E. (2013). Bayesian Gaussian copula factor models for mixed data. Journal of the American Statistical Association, 108(502), 656-665.
+
+    - Kosmidis, I., & Karlis, D. (2014). Model-based clustering using copulas with applications. arXiv preprint arXiv:1404.4077.
+
+    - Rodrıguez, G. (2013). Models for count data with overdispersion.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (j) Biology
+
+    - Schwabe, A., Rybakova, K. N., & Bruggeman, F. J. (2012). Transcription stochasticity of complex gene regulation models. Biophysical Journal, 103(6), 1152-1161.
+
+    - Basset, A., Turner, K. H., Boush, E., Sayeed, S., Dove, S. L., & Malley, R. (2012). An epigenetic switch mediates bistable expression of the type 1 pilus genes in Streptococcus pneumoniae. Journal of bacteriology, 194(5), 1088-1091.
+
+    - Bessarabova, M., Kirillov, E., Shi, W., Bugrim, A., Nikolsky, Y., & Nikolskaya, T. (2010). Bimodal gene expression patterns in breast cancer. BMC genomics, 11(1), S8.
+
+    - Ochab-Marcinek, A., & Tabaka, M. (2010). Bimodal gene expression in noncooperative regulatory systems. Proceedings of the National Academy of Sciences, 107(51), 22096-22101.
+
+    - Hoffman, G. (2016). variancePartition: Quantifying and interpreting drivers of.
+
+—————————————————————————————————————————————————————————————————————————————————
+—————————————————————————————————————————————————————————————————————————————————
+
+(VI) References (may be repeated from other sections)
+
+    (a) Datasets
+
+    - Biase, F. H., Cao, X., & Zhong, S. (2014). Cell fate inclination within 2-cell and 4-cell mouse embryos revealed by single-cell RNA sequencing. Genome research, 24(11), 1787-1796.
+
+    - Yan, L., Yang, M., Guo, H., Yang, L., Wu, J., Li, R., ... & Huang, J. (2013). Single-cell RNA-Seq profiling of human preimplantation embryos and embryonic stem cells. Nature structural & molecular biology, 20(9), 1131-1139.
+
+    - Goolam, M., Scialdone, A., Graham, S. J., Macaulay, I. C., Jedrusik, A., Hupalowska, A., ... & Zernicka-Goetz, M. (2016). Heterogeneity in Oct4 and Sox2 targets biases cell fate in 4-cell mouse embryos. Cell, 165(1), 61-74.
+
+    - Deng, Q., Ramsköld, D., Reinius, B., & Sandberg, R. (2014). Single-cell RNA-seq reveals dynamic, random monoallelic gene expression in mammalian cells. Science, 343(6167), 193-196.
+
+    - Treutlein, B., Brownfield, D. G., Wu, A. R., Neff, N. F., Mantalas, G. L., Espinoza, F. H., ... & Quake, S. R. (2014). Reconstructing lineage hierarchies of the distal lung epithelium using single-cell RNA-seq. Nature, 509(7500), 371-375.
+
+    - Ting, D. T., Wittner, B. S., Ligorio, M., Jordan, N. V., Shah, A. M., Miyamoto, D. T., ... & Ciciliano, J. C. (2014). Single-cell RNA sequencing identifies extracellular matrix gene expression by pancreatic circulating tumor cells. Cell reports, 8(6), 1905-1918.
+
+    - Patel, A. P., Tirosh, I., Trombetta, J. J., Shalek, A. K., Gillespie, S. M., Wakimoto, H., ... & Louis, D. N. (2014). Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma. Science, 344(6190), 1396-1401.
+
+    - Usoskin, D., Furlan, A., Islam, S., Abdo, H., Lönnerberg, P., Lou, D., ... & Linnarsson, S. (2015). Unbiased classification of sensory neuron types by large-scale single-cell RNA sequencing. Nature neuroscience, 18(1), 145-153.
+
+    - Klein, A. M., Mazutis, L., Akartuna, I., Tallapragada, N., Veres, A., Li, V., ... & Kirschner, M. W. (2015). Droplet barcoding for single-cell transcriptomics applied to embryonic stem cells. Cell, 161(5), 1187-1201.
+
+   - Zeisel, A., Muñoz-Manchado, A. B., Codeluppi, S., Lönnerberg, P., La Manno, G., Juréus, A., ... & Rolny, C. (2015). Cell types in the mouse cortex and hippocampus revealed by single-cell RNA-seq. Science, 347(6226), 1138-1142.
+
+   - Macosko, E. Z., Basu, A., Satija, R., Nemesh, J., Shekhar, K., Goldman, M., ... & Trombetta, J. J. (2015). Highly parallel genome-wide expression profiling of individual cells using nanoliter droplets. Cell, 161(5), 1202-1214.
+
+  - Tintori, S. C., Nishimura, E. O., Golden, P., Lieb, J. D., & Goldstein, B. (2016). A transcriptional lineage of the early C. elegans embryo. Developmental cell, 38(4), 430-444.
+
+  - Ciona ???
+
+  - Pollen, A. A., Nowakowski, T. J., Shuga, J., Wang, X., Leyrat, A. A., Lui, J. H., ... & Ramalingam, N. (2014). Low-coverage single-cell mRNA sequencing reveals cellular heterogeneity and activated signaling pathways in developing cerebral cortex. Nature biotechnology, 32(10), 1053-1058.
+
+—————————————————————————————————————————————————————————————————————————————————
+
+    (b) Tools
+
+    - Kiselev, V. Y., Kirschner, K., Schaub, M. T., Andrews, T., Yiu, A., Chandra, T., ... & Hemberg, M. (2016). SC3-consensus clustering of single-cell RNA-Seq data. bioRxiv, 036558.
+
+    - Yau, C. (2016). pcaReduce: hierarchical clustering of single cell transcriptional profiles. BMC bioinformatics, 17(1), 140.
+
+    - https://github.com/naikai/sake
+
+    - Shao, C., & Höfer, T. (2016). Robust classification of single-cell transcriptome data by nonnegative matrix factorization. Bioinformatics, btw607.
+
+    - Maaten, L. V. D., & Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9(Nov), 2579-2605.
+
+    - Lloyd, S. P. Least square quantization in PCM. Bell Telephone Laboratories Paper. Published in journal much later: Lloyd, SP: Least squares quantization in PCM. IEEE Trans. Inform. Theor.(1957/1982).
+
+    - MacQueen, J. (1967, June). Some methods for classification and analysis of multivariate observations. In Proceedings of the fifth Berkeley symposium on mathematical statistics and probability (Vol. 1, No. 14, pp. 281-297).
+
+    - Xu, C., & Su, Z. (2015). Identification of cell types from single-cell transcriptomes using a novel clustering method. Bioinformatics, btv088.
+
+    - Guo, M., Wang, H., Potter, S. S., Whitsett, J. A., & Xu, Y. (2015). SINCERA: a pipeline for single-cell RNA-Seq profiling analysis. PLoS Comput Biol, 11(11), e1004575.
+
+    - Satija, R., Farrell, J. A., Gennert, D., Schier, A. F., & Regev, A. (2015). Spatial reconstruction of single-cell gene expression data. Nature biotechnology, 33(5), 495-502.
+
+    - Yeung, K. Y., Fraley, C., Murua, A., Raftery, A. E., & Ruzzo, W. L. (2001). Model-based clustering and data transformations for gene expression data. Bioinformatics, 17(10), 977-987.
+
+    - Grün, D., Lyubimova, A., Kester, L., Wiebrands, K., Basak, O., Sasaki, N., ... & van Oudenaarden, A. (2015). Single-cell messenger RNA sequencing reveals rare intestinal cell types. Nature, 525(7568), 251-255.
+
+    - Jiang, L., Chen, H., Pinello, L., & Yuan, G. C. (2016). GiniClust: detecting rare cell types from single-cell gene expression data with Gini index. Genome Biology, 17(1), 144.
+
+    - Clough, E., & Barrett, T. (2016). The gene expression omnibus database. Statistical Genomics: Methods and Protocols, 93-110.
+
+    - Kim, D. H., Marinov, G. K., Pepke, S., Singer, Z. S., He, P., Williams, B., ... & Wold, B. J. (2015). Single-cell transcriptome analysis reveals dynamic changes in lncRNA expression during reprogramming. Cell stem cell, 16(1), 88-101.
+
+    - https://bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html—————————————————————————————————————————————————————————————————————————————————
+
+    (c) Packages
+
+    - McCarthy, D. J., Campbell, K. R., Lun, A. T., & Wills, Q. F. (2016). scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R. bioRxiv, 069633.
+
+    - Gentleman, R. C., Carey, V. J., Bates, D. M., Bolstad, B., Dettling, M., Dudoit, S., ... & Hornik, K. (2004). Bioconductor: open software development for computational biology and bioinformatics. Genome biology, 5(10), R80.
+
+    - Love, M. I., Huber, W., & Anders, S. (2014). Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome biology, 15(12), 550.
+
+    - Risso, D., Ngai, J., Speed, T. P., & Dudoit, S. (2014). Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), 896-902.
+
+    - Trapnell, C., Cacchiarelli, D., Grimsby, J., Pokharel, P., Li, S., Morse, M., ... & Rinn, J. L. (2014). Pseudo-temporal ordering of individual cells reveals dynamics and regulators of cell fate decisions. Nature biotechnology, 32(4), 381.
+
+    - Yotsukura, S., Nomura, S., Aburatani, H., & Tsuda, K. (2016). CellTree: an R/bioconductor package to infer the hierarchical structure of cell populations from single-cell RNA-seq data. BMC bioinformatics, 17(1), 363.
+
+    - Finak, G., McDavid, A., Yajima, M., Deng, J., Gersuk, V., Shalek, A. K., ... & Linsley, P. S. (2015). MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data. Genome biology, 16(1), 278.

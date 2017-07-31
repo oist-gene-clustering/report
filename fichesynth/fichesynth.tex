@@ -1,0 +1,99 @@
+
+\documentclass{article}
+
+\usepackage[francais]{babel} %
+\usepackage[T1]{fontenc} %
+\usepackage[latin1]{inputenc} %
+\usepackage{a4wide} %
+\usepackage{palatino} %
+
+\let\bfseriesbis=\bfseries \def\bfseries{\sffamily\bfseriesbis}
+
+
+\newenvironment{point}[1]%
+{\subsection*{#1}}%
+{}
+
+\setlength{\parskip}{0.3\baselineskip}
+
+\begin{document}
+
+\title{Gene expression clustering applied to scRNAseq:\\data analysis, gene expression modeling, and benchmark of clustering algorithms \\ Stage de M1, ENS Cachan, 2016--2017}
+
+\author{C. REDA\\ \\ supervisée par G. ILSLEY and N. LUSCOMBE\\ Genomics and Regulatory Systems Unit\\ OIST, Japon}
+
+\date{$1^{er}$ mars au 31 juillet 2017}
+
+\maketitle
+
+\pagestyle{empty} %
+\thispagestyle{empty}
+
+%% Attention: pas plus d'un recto-verso!
+
+\begin{point}{Le contexte général}
+
+
+%Genome is the key to understand the mechanisms behind life, that is, how an fertilized egg becomes an embryo, and then a fetus; how, from one single stem cell, thousands of cells can be generated, and each of them have a specific role to play in the organism. Every cell contains a copy of the genome, and now, biologists can get access to the coding sequence contained in one single cell, thanks to recent technologic breakthroughs. When regular RNA sequencing (also called bulk RNA sequencing) could only provide a insight of the average cell activity in one organism, single-cell RNA sequencing (scRNAseq) allows to take a snapshot of the activity in each cell, and to better understand the role of a certain cell, and the inter-gene interactions, in the considered organism. \\
+  
+  De quoi s'agit-il? D'où vient la question? Quels sont les travaux
+  déjà accomplis dans ce domaine dans le monde?
+
+\end{point}
+
+\begin{point}{Le problème étudié}
+
+%With such a technique, huge amounts of data about the gene expression in each studied cell can be extracted. How to properly analyze them, in a reasonable time, while taking account of the various error sources in the measurements, still remains a burning question. 
+
+%More specifically, cell clustering based on gene expression levels (referred as "gene expression clustering" here for short), that is, grouping cells in order to better understand their functions in a certain organism, is a topical issue. Dozens of algorithms, using several different methods, have been developed to tackle this problem for single-cell RNA data, even through it is still quite a recent field. However, none of them has been selected yet as the reference clustering algorithm. 
+
+%Also, modeling the gene expression for single-cell RNA data is of paramount importance, to control the quality of sequencing results for instance. In recent techniques, independence of expression between different genes is still widely assumed, although real data show that this assumption does not stand in practice. 
+  
+  Quelle est la question que vous avez résolue? Pourquoi est-elle
+  importante, à quoi cela sert-il d'y répondre?  Pourquoi êtes-vous
+  le premier chercheur de l'univers à l'avoir posée?
+
+\end{point}
+
+\begin{point}{La contribution proposée}
+
+%An interactive and user-friendly online application to analyze single-cell RNA-sequencing data has thus been developed, and allows the exploration of the scRNAseq data from two organisms, \textit{Ciona intestinalis} and \textit{Caenorhabditis elegans}. Other datasets can also be easily added.\\
+
+%Guide for clustering methods (synthesis) for only scRNAseq clustering
+
+%Thus there is a need to perform a benchmark, in order to compare the clustering results, and to check the correctness of the resulting functional cell families found.\\
+
+%A model, leading to a new clustering technique, and an implementation in R are introduced to overcome this issue.
+
+  Qu'avez vous proposé comme solution à cette question? Attention, pas
+  de technique, seulement les grandes idées! Soignez particulièrement
+  la description de la démarche \emph{scientifique}.
+ 
+\end{point}
+
+\begin{point}{Les arguments en faveur de sa validité}
+
+  Qu'est-ce qui montre que cette solution est une bonne solution? Des
+  expériences, des corollaires? Commentez la \emph{stabilité} de votre
+  proposition: comment la validité de la solution dépend-elle des
+  hypothèses de travail?
+
+\end{point}
+
+
+\begin{point}{Le bilan et les perspectives}
+  
+  Et après? En quoi votre approche est-elle générale? Qu'est-ce que
+  votre contribution a apporté au domaine? Que faudrait-il faire
+  maintenant? Quelle est la bonne \emph{prochaine} question?
+
+\end{point}
+
+
+\end{document}
+
+
+
+
+
+

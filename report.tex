@@ -15,6 +15,13 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
+
+\usepackage[francais]{babel} %
+\usepackage[T1]{fontenc} %
+\usepackage[latin1]{inputenc} %
+\usepackage{a4wide} %
+\usepackage{palatino} %
+
 \pagestyle{headings}
 \title{Gene expression clustering applied to scRNAseq:\\data analysis, gene expression modeling, and benchmark of clustering algorithms}
 \author{C. REDA\\M1 student in Computer Science at ENS Cachan\\2016--2017 \\ \\ supervised by G. ILSLEY and N. LUSCOMBE\\Okinawa Institute of Science and Technology, Japan\\ \\March $1^{st}$ to July $31^{st}$ of 2017}
@@ -96,16 +103,16 @@ Firstly, during transcription (see Figure \ref{transcription}), inside the cell 
 \label{transcription}
 \end{figure}
 
-Once the transcription is performed, this molecule exits the cell nucleus, and later, during the translation (see Figure \ref{translation}), the RNA sequence is read by the ribosomes. The \textbf{ribosome} is a macro-molecule which associates an amino acid to each triplet of nucleotides -called \textbf{codon}. A protein is then the resulting sequence of amino acids.\\ 
+Once the transcription is performed, this molecule exits the cell nucleus, and later, during the translation, the RNA sequence is read by the ribosomes. The \textbf{ribosome} is a macro-molecule which associates an amino acid to each triplet of nucleotides -called \textbf{codon}. A protein is then the resulting sequence of amino acids.\\ 
 
 It is worth noticing that mRNA is unstable\cite{brenner1961unstable} compared to DNA, that is, as a general rule, it cannot be read but a limited number of times by the ribosomes. Hence getting access to the sequence carried by a mRNA molecule provides a good idea of the number of produced proteins by the cell, thus of the cell activity and of the expressed genes; as opposed to the study of the DNA sequence, which can be considered rather as a identifying feature for a certain species or individual when compared to other organisms.\\ 
 
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{illustrations/translation.png}
-\caption{Translation of the mRNA into proteins\protect{\cite{imgTranslation}}. The green unit is the ribosome, and E, P and A are the three sites where translation occurs.}
-\label{translation}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[scale=0.5]{illustrations/translation.png}
+%\caption{Translation of the mRNA into proteins\protect{\cite{imgTranslation}}. The green unit is the ribosome, and E, P and A are the three sites where translation occurs.}
+%\label{translation}
+%\end{figure}
 
 A gene is considered expressed when the associated coding sequence is transcribed from the initial DNA sequence to the RNA sequence carried by the mRNA, because the protein it codes is likely to be produced by the ribosomes. 
 
@@ -137,210 +144,28 @@ Hopefully, when a proper subset of informative genes has been selected, cells ma
 
 \textbf{RNA sequencing} is aimed at obtaining the \textbf{primary structure} of a certain RNA fragment, that is, the ordered series of letters A, G, C and U, which respectively refer to the following nucleotides: adenine, guanine, cytosine and uracil.\\
 
-As explained above, most of the time, DNA and RNA sequencings serve different purposes. DNA sequencing allows to get access to the code needed for living things to survive, and may be helpful to retrace the evolutionary history of a given species, whereas RNA sequencing can cast a light on the regulatory inter-gene interactions (has gene A an influence on the expression level of gene B? Does it favour/inhibit the transcription of this gene?) and on the developmental phase of an organism, from the fertilized egg to the fetus: how do the different limbs form? How do some stem cells turn into specialized cells, having only a very specific function in the organism? (This phenomenon is called \textbf{cell differentiation}.) However, how regulatory systems exactly work is still unknown, and DNA may be useful in the future to understand whole regulatory processes.
+As explained above, most of the time, DNA and RNA sequencings serve different purposes. DNA sequencing allows to get access to the code needed for living things to survive, and may be helpful to retrace the evolutionary history of a given species, whereas RNA sequencing can cast a light on the regulatory inter-gene interactions (has gene A an influence on the expression level of gene B? Does it favour/inhibit the transcription of this gene?) and on the developmental phase of an organism, from the fertilized egg to the fetus: how do the different limbs form? How do some stem cells turn into specialized cells, having only a very specific function in the organism? (This phenomenon is called \textbf{cell differentiation}.) However, how regulatory systems exactly work is still unknown, and DNA may be useful in the future to understand whole regulatory processes.\\
 
-\begin{figure}[H]
-\centering
-\includegraphics[scale=1.5]{illustrations/sequencing.png}
-\caption{General pipeline to get a gene expression matrix from a mRNA fragment\protect{\cite{griffith2015informatics}}}
-\label{sequencing}
-\end{figure}
+Please refer to the \textbf{Details about sequencing} chapter in Appendix to know how RNA sequencing works, and how to get a \textbf{gene expression matrix} from raw sequencing data.\\
 
-Sequencing biological material requires several steps (see Figure \ref{sequencing}).\\
-
-\begin{enumerate}
-\item First, the mRNA molecule in the samples are chemically isolated. 
-\item Then, these molecules are used to generate (complementary) DNA (cDNA) via \textbf{reverse-transcription}. 
-\item Later, these cDNA strands are fragmented into \textbf{reads}. Reads are short series of A (which stands for adenine), G (guanine), C (cytosine) and T (thymine) letters resulting from the sequencing of the mRNA strand. Then these reads are sequenced, and the resulting reads are aligned to a reference genome (see Figure \ref{alignment}), that is available in a online database such as \textsc{WormBase}\cite{stein2001wormbase} or \textsc{NCBI}\cite{ncbi}, for instance. The best alignment is the one that preserves most the order of the bases in the reference sequence -but the exact definition of the "best alignment" highly depends on the alignment algorithm used. 
-\item Then a gene expression matrix M is computed: each time a read from condition $j$ is aligned to a certain reference sequence corresponding to a specific gene $i$, the associated number $M_{i,j}$ is incremented.
-\end{enumerate}
-
-Gene expression value is also called \textbf{gene expression level}, or \textbf{gene expression count} -when the numbers are integers. The data to analyze is then the integer matrix of gene expression value, that is, as a general rule, a matrix M which rows are indexed by the considered genes -or \textbf{features}- and which columns are indexed by the studied cells -called \textbf{samples}. Columns can also be called \textbf{conditions} (e.g., non-cancer versus cancer cells, or treatment A versus treatment B versus treatment C), depending on the study. Each coefficient $M_{i,j}$ is the number of times the coding sequence for gene $i$ has been recognized in the resulting ${A, G, U, C}$-sequence obtained by the sequencing of the mRNA stand in cell $j$, that is, the number of detected reads in the sequencing of this mRNA strand that refer to this gene.\\
-
-However, the total number of reads detected may vary from one cell or condition to another. In order to be able to compare gene expression values across several cells, the matrix may be trimmed (to remove outlier cells or genes), and "normalized" to preserve proportionality between gene expression values. There are actually many ways to achieve this normalization\cite{love2014moderated}\cite{chen2014differential}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.45]{illustrations/alignment.jpg}
-\caption{Read alignment\protect{\cite{imgAlignment}}}
-\label{alignment}
-\end{figure}
+Gene expression value is also called \textbf{gene expression level}, or \textbf{gene expression count} -when the numbers are integers. A \textbf{gene expression matrix}, that is, the data to analyze, is then the integer matrix of gene expression value, that is, as a general rule, a matrix M which rows are indexed by the considered genes -or \textbf{features}- and which columns are indexed by the studied cells -called \textbf{samples}. Columns can also be called \textbf{conditions} (e.g., non-cancer versus cancer cells, or treatment A versus treatment B versus treatment C), depending on the study. Each coefficient $M_{i,j}$ is the number of times the coding sequence for gene $i$ has been recognized in the resulting ${A, G, U, C}$-sequence obtained by the sequencing of the mRNA stand in cell $j$, that is, the number of detected \textbf{reads} in the sequencing of this mRNA strand that refer to this gene. Since it is computationally expensive to align the whole sequence at one time (see Appendix for the definition of \textbf{alignment}), the corresponding sequence is cut in short parts called reads, on which is performed the alignment.\\
 
 My implementation of a pipeline to get a count matrix from a set of bulk RNAseq reads (Illumina sequence data, contained in one or two .fastq file-s), provided a reference genome (.fasta file) and the corresponding annotation file (.gtf), is available there: {\url{https://github.com/oist-gene-clustering/RNAseqpipeline}}\\ 
 
-\bigskip
-\noindent \textbf{About single-cell RNA sequencing (scRNAseq)}
-\bigskip
-
-scRNAseq is quite a new technology. At first, studying mRNA became affordable thanks to microarrays\cite{chang1983binding}, that started to be widely used in 1995\cite{schena1995quantitative}. This technology used miniaturized and optimized high-throughput screening on arrays of biological data\cite{microarraywiki} (see Figure \label{microarray}). The latter were also used for DNA studies ("DNA microarrays"\cite{southern2001dna}). 
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{illustrations/microarray.jpg}
-\caption{Microarray experiment for mRNA data\protect{\cite{imgMicroarray}}}
-\label{microarray}
-\end{figure}
-
-At this time, tools for improving downstream analysis (that is, the analysis of the resulting gene expression matrix) were needed, and many clustering algorithms\cite{do2008clustering}\cite{dabney2005classification}\cite{eisen1998cluster}\cite{monti2003consensus} and statistical tools\cite{simon2007analysis}\cite{kerr2000analysis} were designed.\\
-
-However, in 2007, \cite{barbazuk2007snp} used RNA-sequencing to detect chromosomal modifications in the transcriptome, via \textbf{reverse transcription} (see previous section). Because of its assets, comparing to microarrays -increased data quality\cite{zhao2014comparison}\cite{wang2009rna}, improved detection of rare transcripts, ...\cite{illuminarnamicroarray}- and the drop in the sequencing price, researchers' interest in regular or bulk RNAseq had soon plummeted in the 2010's and until now\cite{conesa2016survey}\cite{leon2015bayesian}.\\
-
-Until quite recently, only groups of cells could be isolated and sequenced. Henceforth, the gene expression levels obtained actually were average gene expression values across the cells from one given group. Thanks to scRNAseq, cell activity can now be witnessed at a higher resolution, thus give a more accurate report of the gene expression in a given single cell\cite{stegle2015computational}\cite{poirion2016single}. Nevertheless, there is doubt about the reusability of the previous methods and tools developed for RNA-seq and microarrays, due to the following phenomena being specific to single-cell RNA seq data:\\
+Until quite recently, only groups of cells could be isolated and sequenced. Henceforth, the gene expression levels obtained actually were average gene expression values across the cells from one given group (bulk RNAseq data). Thanks to scRNAseq (a.k.a. \emph{single cell RNA sequencing}) techniques, cell activity can now be witnessed at a higher resolution, thus give a more accurate report of the gene expression in a given single cell\cite{stegle2015computational}\cite{poirion2016single}. Nevertheless, there is doubt about the reusability of the previous methods and tools developed for RNA-seq and microarrays (see \textbf{Details about sequencing} appendix), due to the following phenomena being specific to single-cell RNA seq data:\\
 
 \begin{itemize}
 \item scRNAseq data are even noisier than bulk RNA seq, because of the low biological material available and procedures which can easily be contaminated\cite{brennecke2013accounting}\cite{grun2014validation}.
 \item Unlike bulk RNAseq data, scRNAseq results are subject to \textbf{dropout} phenomena\cite{kharchenko2014bayesian}\cite{lun2016pooling}: a lot of gene transcripts cannot actually be detected (because of an error during reverse-transcription), which results in a gene expression matrix with a lot of zeros, and makes transcriptome profiling harder to perform.
-\item The higher resolution offered by single-RNA sequence provide a new insight on cells having a same cell type: the gene expression levels of certain genes may vary from one cell to another\cite{poirion2016single}\cite{martinez2017aging}.
+\item The higher resolution offered by single-RNA sequence provide a new insight on cells having a same cell type: the gene expression levels of certain genes may vary from one cell to another\cite{poirion2016single}\cite{martinez2017aging}, even if both of them have the same cell type.
 \item It also allows to observe the evolution of cell gene expression profiles during \textbf{mitosis} (cell cycle)\cite{trapnell2014dynamics}. The mitosis is the cell division into two new cell copies.
+\item Eventually, gene expression distribution is often bimodal\cite{bessarabova2010bimodal}\cite{mcdavid2014modeling}, and sometimes multimodal\cite{ochab2010bimodal}.
 
 \end{itemize} 
-
-Today, there are lots of techniques\cite{shapiro2013single} for single-cell RNA sequencing, the first one being Tang et al.\cite{tang2009mrna} (2009), see Figure \ref{historyseq}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=1]{illustrations/scrnaseq.jpg}
-\caption{History of scRNAseq and general pipeline to get a set of reads from a single-cell RNA fragment\protect{\cite{kolodziejczyk2015technology}}}
-\label{historyseq}
-\end{figure}
 
 My implementation of a pipeline to get a count matrix from a set of scRNAseq reads (Illumina sequence data, contained in one or two .fastq file-s), provided a reference genome (.fasta file) and the corresponding annotation file (.gtf), is available there: {\url{https://github.com/oist-gene-clustering/RNAseqpipeline}}\\
 
 It uses softwares from \cite{andrews2010fastqc}\cite{bolger2014trimmomatic}\cite{langmead2012fast}\cite{li2009sequence}\cite{pertea2015stringtie}\cite{jiang2016quality}\cite{katayama2013samstrt}\cite{trapnell2012differential}.
-
-\section{Cluster analysis}
-
-\textbf{Purpose}
-\bigskip
-
-\textbf{Cluster analysis}, that is, grouping data samples respect to their similarity -same-group samples are more similar in some sense than to samples from other groups- is one of the primary steps for exploring data, and is meant to guide further analysis. Applied to scRNAseq, it may help discovering new cell functional families\cite{jiang2016giniclust}, control data quality\cite{mccarthy2016scater} and delete outlier samples\cite{kiselev2016sc3}, or better understand cell differentiation at a given developmental stage\cite{goolam2016heterogeneity}.\\
-
-The different groups -called \textbf{clusters}- are not known beforehand, neither are the features that can the most reliably discriminate the data samples. As a general rule, data samples are identified to vectors, where each component refers to a certain feature, that may be binary, real-valued, categorical, ... according to the type of data. Thus cluster analysis -also called clustering- boils down to grouping points in a certain mathematical space.\\
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.15]{illustrations/clusteranalysis.jpg}
-\caption{Pipeline of cluster analysis, from the raw data to the clustering validation\protect{\cite{handl2005computational}}}
-\label{clusteranalysis}
-\end{figure}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{| l | l | l |}
-\hline
-\parbox[c]{5cm}{\textbf{Steps}} & \
-\parbox[c]{5cm}{\textbf{Selection of the\\ following items}} & 
-\parbox[c]{5cm}{\textbf{Corresponding questions}}\\
-\hline
-\parbox[c]{5cm}{\textbf{Pre-processing}} & 
-\parbox[c]{5cm}{Feature selection,\\distance selection,\\data points normalization} & 
-\parbox[c]{5cm}{\textit{~\\- What is the data about?\\- What are the relevant data features, and how to efficiently extract them?\\- Do I need to perform some transformations on the data points before comparing their vectors?\\- How do I compare data vectors?\newline}}\\
-\hline
-\parbox[c]{5cm}{\textbf{Clustering}} & 
-\parbox[c]{5cm}{Choice of the algorithm \\(and of corresponding\\ parameters)} & 
-\parbox[c]{5cm}{\textit{~\\- How do I efficiently get the clusters?\\- What is the algorithm input?\newline}}\\
-\hline
-\parbox[c]{5cm}{\textbf{Clustering\\validation}} & 
-\parbox[c]{5cm}{Internal/external measures} & 
-\parbox[c]{5cm}{\textit{~\\- How do I check if the clusters are consistent with the original data (external measures)?\\- How do I check if the algorithm went wrong (internal measures)?\newline}} \\
-\hline
-\end{tabular}
-\caption{Cluster analysis steps (according to \cite{handl2005computational})}
-\label{clustersteps}
-\end{table}
-
-Clustering is not all about applying a certain algorithm to the data (see Figure \ref{clusteranalysis} and Table \ref{clustersteps}). Each step above is of equal importance. More especially, validation step is of paramount importance, since there is no clustering algorithm that will be able to predict the best grouping of points for any kind of data -with more than 2 points\cite{kleinberg2002impossibility}. The choice of the algorithm may determine the shape of the resulting clusters (e.g. spherical for K-means), their size and their density, for instance. Thus having an idea of the clustering error can be helpful.\\
-
-Moreover, feature selection, especially for gene expression clustering,  is also a critical step. Since only a handful of genes are really informative, that, provide insight on the cell functional family, the remaining of the features is but noise, thus useless, and may also prevent an algorithm to find the patterns. There is currently no common definition of what an informative gene should be, and many methods exist\cite{hira2015review}\cite{jirapech2005feature}\cite{latkowski2014feature}. Most of the time, a gene is considered informative if the variance of its expression across the cells is high, and if they are considered independent -this leads to the use of PCA on the gene expression matrix. However, PCA actually limits the number of informative genes to the minimum of the dimensions of the gene expression matrix $M$ (because the loading vectors it computes are the eigenvectors of $M^{T}M$, in increasing corresponding eigenvalue order), and assumes a linear relationship between the gene expression values\cite{pearson1901liii], so this definition is not really satisfying. Plus, the variance of gene expression may be due to a dropout event. Other algorithms select the features according to their frequency in the gene expression matrix\cite{kiselev2016sc3}: ubiquitous genes are removed, because they are considered poorly specific, rare genes can be seen as noise, or, if a certain gene appear in only a few cells or with a low expression value, it may be also removed. However, this approach may prevent the algorithm to find rare cell types for instance\cite{kiselev2016sc3}. To my mind, informative genes are features with non-null variance, frequency in cells inferior to a certain threshold (typically, less than 70\% of the cells), and such as the (positive or negative) correlation between two informative genes is less than a certain threshold (for instance, 0.9). This quite intuitive definition is actually used in the \textbf{caret} package\cite{kuhn2008caret}, among other softwares, and also described in \cite{guyon2003introduction}. I could not actually find a convincing non-parametric definition. The limit on the frequency actually removes all the quality control genes. The correlation function chosen may be a rank correlation function such as Kendall's $\tau$\cite{kendall1938new}, to avoid the caveats of the Pearson correlation measure, for instance, sensibility to outliers\cite{outliercorr}.
-
-\begin{definition}[Kendall's $\tau$]\label{kendalltau}{Let $n \in \mathbb{N}^*$, X = \{$x_1, x_2, ..., x_n$\} and Y = \{$y_1, y_2, ..., y_n$\}, such as X and Y have unique orderable values.\\
-
-Let $a$ denote the number of pairs $(x_i, y_i), (x_j, y_j), i,j \in \{1,2, ..., n\}$ such as $x_i <  x_j \land y_i < y_j$ OR $x_i >  x_j \land y_i > y_j$, and $b$ denote the number of pairs such as $x_i <  x_j \land y_i > y_j$ OR $x_i >  x_j \land y_i < y_j$. Then:
-
-\begin{center} $\tau = \frac{a-b}{\frac{1}{2} \times n \times (n - 1)}$ \end{center}}\end{definition}
-
-\newpage
-
-\bigskip
-\noindent \textbf{State-of-the-art}
-\bigskip
-
-Several different methods have been designed for clustering (sc)RNAseq (see Tables \ref{methods} and \ref{methods2}).
-
-\begin{table}[H]
-\centering
-\begin{tabular}{| l | l | l | l |}
-\hline
-\parbox[c]{5cm}{\textbf{Category}} & 
-\parbox[c]{5cm}{\textbf{Description}} &
-\parbox[c]{5cm}{\textbf{Implementations}}\\
-\hline
-\parbox[c]{5cm}{\textbf{Connectivity-based}} & 
-\parbox[c]{5cm}{~\\ These algorithms build a hierarchy of the samples (i.e. a tree which leaves are the samples), according to the chosen distance measure.\\
-
-Given a height, the final clustering is the set of trees in the forest obtained by deleting edges higher than the selected height. \newline} &
-\parbox[c]{5cm}{Hierarchical clustering\\(SINCERA\cite{guo2015sincera}), ...}\\
-\hline
-\parbox[c]{5cm}{\textbf{Centroid-based}} & 
-\parbox[c]{5cm}{~\\ Given the expected number of clusters $k$, these algorithms compute iteratively $k$ points, such as each of them 
-is the centroid of a set of similar points.\\ 
-
-The final clustering is obtained by assigning each point to the cluster of the nearest centroid. These steps are repeated until convergence of the clusters.\newline} &
-\parbox[c]{5cm}{K-means\cite{macqueen1967some}\cite{tseng2007penalized},\\
-
-Fuzzy C-means\cite{dunn1973fuzzy}\cite{filippone2005unsupervised},\\
-
-Nonnegative Matrix\\ Factorization\cite{lee1999learning}\\(e.g. NIMFA\cite{shao2016robust}),\\
-
-Nearest Neighbor-like\\(e.g. SNN-Cliq\cite{xu2015identification}), ...}\\
-\hline
-\parbox[c]{5cm}{\textbf{Density-based}} & 
-\parbox[c]{5cm}{~\\ Clusters are areas of higher density (in the number of data points) compared to the remainder of the data points.\\
-
-These algorithms try to detect local differences in density in order to find the clusters.\newline} &
-\parbox[c]{5cm}{DBSCAN\cite{ester1996density}, ...}\\
-\hline
-\end{tabular}
-\caption{Some categories of clustering algorithms with examples from gene expression clustering (1) (adapted from \cite{classifclustering})}
-\label{methods}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{| l | l | l | l |}
-\hline
-\parbox[c]{5cm}{\textbf{Distribution-based}} & 
-\parbox[c]{5cm}{~\\ A mixture of $k$ same-model distributions (where $k$ is the expected number of clusters) is fitted to the data, that is, the different parameters of the mixture are such as they maximize the likelihood of the observed data.\\
-
-Then the probability of membership of each point to every cluster is computed, and the final clustering is the one maximizing the membership probabilities.\newline} &
-\parbox[c]{5cm}{Gaussian Mixture Models\\ (e.g. EMCluster\cite{melnykov2009model},\\MCLUST\cite{fraley1999mclust}),\\
-
-\textit{ad hoc} models (e.g. Seurat\cite{satija2015spatial}), ...}\\
-\hline
-\parbox[c]{5cm}{\textbf{Discriminative feature\\computation}} & 
-\parbox[c]{5cm}{~\\These algorithms first compute a somehow summary of the most relevant features of each point, either
-by representing them by the restrictions of their associated vectors to the components having the maximum of variance (PCA), or
-by mapping the data vectors to 2D (resp. 3D) vectors such as the 2D (resp. 3D) representations of two similar vectors in the 
-original space are close in the new space (t-SNE).\\
-
-Then one of the algorithms above is applied to the resulting representations.\newline} &
-\parbox[c]{5cm}{Principal Component Analysis (e.g. pcaReduce\cite{yau2016pcareduce}),\\
-
-t-Stochastic Neighbor Embedding\\
-(e.g. t-SNE+K-means\cite{grun2015single},\\
-t-SNE+DBSCAN), ...}\\
-\hline
-\parbox[c]{5cm}{\textbf{Consensus clustering}} & 
-\parbox[c]{5cm}{~\\After having selected one of the algorithms described, and iterated it several times with different values of parameters, these algorithms construct a 
-consensus matrix $M$ such as: $M_{i,j}$ is the (mean) number of times points i and j are located in the same cluster.\\
-
-$M$ is then used to determine the final clustering.\newline} &
-\parbox[c]{5cm}{e.g. SC3\cite{kiselev2016sc3}, ...}\\
-\hline
-\end{tabular}
-\caption{Some categories of clustering algorithms with examples from gene expression clustering (2) (adapted from \cite{classifclustering})}
-\label{methods2}
-\end{table}
 
 \chapter{scRNAseq analysis application}
 
@@ -353,7 +178,7 @@ Along with scRNAseq, huge amounts of gene expression data are available. Especia
 \subfigure\includegraphics[scale=0.5]{illustrations/celegans.jpg}
 \end{figure}
 
-I thus implemented an interactive application in order to perform these tasks, to which other datasets can easily be added. The code (in Shiny, a R framework) is available here:\\  %TODO lien vers le code
+I thus implemented an interactive application in order to perform these tasks, to which other datasets can easily be added. The code (in Shiny, a R framework) is available here: {\url{https://github.com/oist-gene-clustering/scwebexplorer}}\\ 
 
 Packages: R\cite{baser}, shiny\cite{shinyr}, scater\cite{scaterr}, rPython\cite{rpythonr}, RColorBrewer\cite{rcolorbrewerr}, NMF\cite{nmfr}, MAST\cite{mastr}, ggplot2\cite{ggplot2r}, genefilter\cite{genefilterr}, gplots\cite{gplotsr}, calibrate\cite{calibrater}, shinyBS\cite{shinybsr}, shinythemes\cite{shinythemesr}, shinydashboard\cite{shinydashboardr}, shinyjs\cite{shinyjsr}, DT\cite{dtr}, shinycssloaders\cite{shinycssloadersr}, shinyDND\cite{shinydndr}, ggfortify\cite{ggfortifyr}, ggbiplot\cite{ggbiplotr}, plotrix\cite{plotrixr} and shinyWidgets\cite{shinywidgetsr}.\\
 
@@ -361,96 +186,7 @@ Packages: R\cite{baser}, shiny\cite{shinyr}, scater\cite{scaterr}, rPython\cite{
 
 After obtaining the gene expression matrix, one may be interested in knowing the number of subpopulations of cells, that is, of groups of similar cells, but also which genes are expressed differently from one cell group to another (\textbf{differential expression analysis}), or visualizing the whole cell population in the observed data (see Figure \ref{pipeline}). One may also would like to know the \textbf{gene expression pattern} for each feature, that is, the sets of most expressed and less highly expressed genes in the cell.\\
 
-There is already an application, called SAKE\cite{sake}, performing clustering (with Non-negative Matrix Factorization, see below for a description) and differential expression analysis. It is a really complete and interesting application. However, there are a lot of options, thus making the application not really intuitive, and does not display the gene expression patterns. Moreover, it uses DESeq2\cite{love2014moderated} to perform differential expression analysis, which is only a slightly modified version of a differential expression analyzer\cite{anders2010differential} for bulk RNA seq data, thus not taking into account some characteristics of sRNAseq data, such as the expected high number of null gene expression values (DESeq2 models gene expression as only following a negative binomial distribution, which is the one bulk RNAseq is assumed to follow).
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.3]{illustrations/pipelinedownstream.png}
-\caption{Possible downstream analysis pipeline after alignment and quality check of the resulting gene expression matrix\cite{poirion2016single}}
-\label{pipeline}
-\end{figure}
-
-\section{Implementation}
-
-This is an example about how to use the application with the \textit{Ciona intestinalis} dataset\cite{suyama2016singlecell} (the dataset can be modified using the button on the top left of the application front page). I will compare the results obtained with the application (for cell B5.2 against B5.1, A5.1, A5.2, a5.3, a5.4 and b5.3, b5.4, and genes KH.C9.853 and KH.C13.27) and Figure D, page 382, in \cite{matsuoka2013transcriptome}.\\
-
-In the \textbf{Data visualization} tab (see Figure \ref{menu}),  the front page displays a Principal Component Analysis (PCA) plot, indicating each cell type and embryo by a certain shape and colour, which is meant to give a visualization of all cells in the dataset, and help selecting the relevant cell groups.\\
-
-On the right side, the heatmap is coloured according to the number of raw counts in each cell for each of the $min(10, p)$ most highly-expressed genes (where $p$ is the number of genes), in order to visualize the potentially gene outliers\cite{poirion2016single}. On the sides can be seen hierarchical clusterings of the cells (on top), and of the genes (on the left).\\
-
-The two groups (or conditions) to compare can be selected by drag and drop (see Figure \ref{cellselection}).\\
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.2]{application/menu.png}
-\caption{Menu}
-\label{menu}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.2]{application/cellselection.png}
-\caption{Cell group selection}
-\label{cellselection}
-\end{figure}
-
-At first, the \textbf{Differential expression analysis} tab (see Figure \ref{geneselection}) allows the user to view the raw counts of every gene in every cell of the dataset. Then genes can be selected directly from the table (or using the provided buttons). The user can search for a given gene with the search bar on the top-right corner of the table. The PCA biplot can be updated: the PCA is then performed on the currently selected genes.\\
-
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.2]{application/geneselection.png}
-\subfigure\includegraphics[scale=0.2]{application/geneselected.png}
-\caption{Gene selection panel}
-\label{geneselection}
-\end{figure}
-
-Differential expression analysis pipeline (from MAST package\cite{finak2015mast}) is performed on the selected genes and cell groups when clicking on "Run computation on selection" button (see Figure \ref{geneselection}). After a few seconds of computing, the front page displays the table with genes ranked in increasing \textbf{p-value} order (see Figure \ref{de}). The p-values are a way to quantify the probability that a certain gene can be differentially expressed \textit{only by chance} between the two cell groups: the lower a p-value is, the more the associated gene is likely to be differentially expressed in practice.\\
-
-In the other tab, there is a heatmap with the selected cells and the most \textbf{differentially-expressed genes} (the genes which expression level strongly differs according to the considered cell group), with associated hierarchical clusterings (on genes on the left, on cells on top of the heatmap (see Figure \ref{de}).\\
-
-Moreoever, the application offers now the opportunity to select genes according to their \textbf{p-values}. The cutoff value is user-selected with the slider bar (see Figures \ref{pcutoff}).\\
-
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.2]{application/pvalue-results.png}
-\subfigure\includegraphics[scale=0.2]{application/de-results.png}
-\caption{Differential expression analysis results}
-\label{de}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.2]{application/selectpvaluecutoff.png}
-\subfigure\includegraphics[scale=0.2]{application/selectpvaluecutoff2.png}
-\caption{Gene selection with p-value cutoff}
-\label{pcutoff}
-\end{figure}
-
-In the \textbf{Gene expression pattern visualization} tab (see Figure \ref{visualization}), when the selected threshold type is set to "Binary", the front page displays a schema of the selected cells in each group, where each rectangle represents one of the selected genes.\\
-
-Given the threshold value (in percentage of the total raw count expression value of a given gene in a given cell), the rectangle is colored if and only if the gene expression raw count value of the gene in the cell is over this threshold. For instance, if the threshold is fixed to 10\% of the total expression value, the rectangle associated with gene $i$ in the set of rectangles corresponding to cell $j$ will be colored if and only if (M being the gene expression matrix) $M_{i,j} > 10\% \times \sum{_{k}}{M_{k, j}}$. It should be kept in mind that cell gene patterns cannot be compared directly, since the expressiveness of a given gene is only determined by the ratio gene expression value/ total gene expression value in the considered cell.\\
-
-The threshold value is user-selected with a slider bar (see Figure \ref{visualization}).\\
-
-When the threshold type is set to "Graded", the gene expression patterns are colored according to the legend displayed on the left, the same way as with binary threshold (see Figure \ref{graded}).\\
-
-Eventually, a script is also provided to make adding new datasets to the application easier. Source code and other tests can be found at: {\url{https://github.com/oist-gene-clustering/scwebexplorer}}
-
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.2]{application/patternthres1.png}
-\subfigure\includegraphics[scale=0.2]{application/patternthres2.png}
-\caption{Visualization of gene expression pattern with selection of a binary gene expression threshold}
-\label{visualization}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.2]{application/gradedthres.png}
-\subfigure\includegraphics[scale=0.5]{application/figureDchordate.png}
-\caption{Visualization of graded gene expression pattern and comparison with Figure B from \cite{matsuoka2013transcriptome}}
-\label{graded}
-\end{figure}
+There is already an application, called \textsc{SAKE}\cite{sake}, performing clustering and differential expression analysis. It is a really complete and interesting application. However, there are a lot of options, thus making the application not really intuitive, and does not display the gene expression patterns. Moreover, it uses DESeq2\cite{love2014moderated} to perform differential expression analysis, which is only a slightly modified version of a differential expression analyzer\cite{anders2010differential} for bulk RNA seq data, thus not taking into account some characteristics of sRNAseq data, such as the expected high number of null gene expression values (DESeq2 models gene expression as only following a negative binomial distribution, which is the one bulk RNAseq is assumed to follow). See Appendix for a example of use of this application.\\
 
 \chapter{Modeling of single-cell gene expression}
 
@@ -462,13 +198,13 @@ However, such hypotheses as independence of gene expression between two genes, e
 
 To my knowledge, only \cite{barash2002context} (for microarray data), \cite{zhang2017classification} (for bulk RNAseq data) and \cite{satija2015spatial} (for scRNAseq data) have tried to tackle this issue.\\
 
-However, \cite{barash2002context} models the gene dependency by \textbf{optimizing a cost function respect to} a certain set of intercorrelated feature classes denoted G (that is, finding a set G that minimizes a certain function), which is then used to generate posterior probabilities on the gene expression level of a certain gene (associated with random variable X) \textit{Prob}$(X | $class$ = k)$, which are computed differently depending on whether $k$ belongs to G, and the local structure associated with this class. This model seems hard to adapt to the specificities of scRNAseq data (see previous sections), and computationally expensive, since G, the local structures for each feature class in G, and the parameters of the posterior probability distributions need to be learned beforehand.\\
+However, \cite{barash2002context} models the gene dependency by \textbf{optimizing a cost function respect to} a certain set of intercorrelated feature classes denoted G (that is, finding a set G of informative gene classes that minimizes a certain function), which is then used to generate probabilities on the gene expression level of a certain gene (associated with random variable X) \textit{Prob}$(X | $class$ = k)$, which are computed differently depending on whether the gene class $k$ belongs to G, and the local gene correlation structure associated with this class. This model seems hard to adapt to the specificities of scRNAseq data (see previous sections), and computationally expensive, since G, the local structures for each feature class in G, and the parameters of the probability distributions need to be learned beforehand.\\
 
-\cite{satija2015spatial}, although it is targeted at scRNAseq data, does not take into account the dropout phenomena, and needs to select a small subset of "landmark" (informative) genes (which are actually high-variance genes), and to compute "a spatial reference map of gene expression" for these genes. Moreover, the role of the "resolution" parameter is not intuitive, thus choosing a value for this parameter is done by trial and error. Sometimes, choosing the value in the interval [1,2], as suggested by the authors, does not give good results.\\
+\cite{satija2015spatial}, although it is targeted at scRNAseq data, does not take into account the dropout phenomena, and needs to select a small subset of "landmark" (informative) genes (which are actually considered high-variance genes by default). Moreover, the role of the "resolution" parameter is not intuitive, thus choosing a value for this parameter is done by trial and error. Sometimes, choosing the value in the interval [0.6, 1.2] (for datasets with about 3,000 cells, and decreasing this parameter for smaller datasets), as suggested by the authors\cite{seuratparam}, does not give good results.\\
 
-In \cite{zhang2017classification}, based on the work of \cite{hee2014copula}, the use of copulas, despite of not being directly adaptable to scRNAseq, is a more elegant solution, that allows to select separately the feature dependence model and each feature probability distribution. The flexibility of this sort of model offers the opportunity to better control and list the underlying  simplifying hypotheses.\\
+In \cite{zhang2017classification}, based on the work of \cite{hee2014copula}, the use of copulas in the model, despite of the latter not being directly adaptable to scRNAseq, is a more elegant solution, that allows to select separately the feature dependence model and each feature probability distribution. The flexibility of this sort of model offers the opportunity to better control and list the underlying  simplifying hypotheses.\\
 
-What I want to find a model of gene expression associated to each condition of the gene expression matrix, that takes into account gene correlation. The set of expression values of all genes in a given cell can be aggregated into a real-valued vector. I will thus try to find a suitable copula model, associated with each condition, that is as close as possible to the multivariate cumulative distribution function giving the probability of the gene expression vector associated to this cell to be smaller (coordinate-wise) to some constant vector. The main point that justifies this approach is that little is known about the whole regulatory system between genes in one cell, but approximations of expression for one given gene have already been studied. Hence distribution models for each variable of the gene expression vector associated with one cell are known.
+What I want to find a model of gene expression associated with each condition of the gene expression matrix, that takes into account gene correlation. The set of expression values of all genes in a given cell can be aggregated into a real-valued vector. I will thus try to find a suitable copula model, associated with each condition, that is as close as possible to the multivariate cumulative distribution function giving the probability of the gene expression vector associated with this cell to be smaller (coordinate-wise) to some input constant vector. The main point that justifies this approach is that little is known about the whole regulatory system between genes in one cell, but approximations of expression for one given gene have already been studied. Hence distribution models for each variable of the gene expression vector associated with one cell are known.
 
 \section{Mathematical background}
 
@@ -481,6 +217,10 @@ Copulas are a efficient and simple tool to model correlation between random vari
 Let $I=\{1, 2, ..., p\}, p \in \mathbb{N^*}$, and let $(X_i)_{i \in I}$ be the set of real-valued random variables which joint probability distribution $\mathbb{P}$ is to find. For each $i \in I$, let $f_{X_i}$ denote the \textbf{cumulative distribution function} (CDF) associated with the random variable $X_i$, i.e.:
 
 \begin{definition}[Cumulative distribution function]\label{cdf}{The CDF $f_{X_i}$ associated with random variable $X_i$ is defined such as:\begin{center} $\forall x \in \mathbb{R}, \forall i \in I, f_{X_i}(x) =$ \textit{Prob}($X_i \leq x$)\end{center}}\end{definition}
+
+This definition can be extended to random vector (using coordinate-wise order on vectors):
+
+\begin{definition}[Multivariate CDF]\label{cdf}{The CDF $f_{X}$ associated with random vector $X$ is defined such as:\begin{center} $\forall x \in \mathbb{R^{p}}, f_{X}(x) =$ \textit{Prob}($X \leq x$) = \textit{Prob}($X_1 \leq x_1$, $X_2 \leq x_2$, ..., $X_p \leq x_p$) \end{center}}\end{definition}
 
 Let eventually $f_{X_1, X_2, ..., X_p}$ be the CDF of the random vector $(X_1, X_2, ..., X_p)$. $f_{X_1, X_2, ..., X_p}$ is called the \textbf{joint CDF} of the variables $(X_i)_{i \in I}$, while each $f_{X_i}$, for $i \in I$, is the \textbf{marginal CDF} (or \textbf{margin}) associated with variable $X_i$.
 
@@ -516,14 +256,14 @@ I will use two lemmas:
 
 \begin{lemma}[Mixture of copulas]\label{mixtureofcopulas}{A mixture of copulas is a copula, that is, if $C_1, C_2, ..., C_n$, where $n \in \mathbb{N}^*$, are copulas, and $\alpha_1, \alpha_2, ..., \alpha_n$ are positive real-valued numbers such as $\sum{_{i \leq n}}{\alpha_i} = 1$, then C : $[0,1]^n \rightarrow [0,1]$, $x \rightarrow \sum{_{i \leq n}}{\alpha_i \times C_i(x_i)}$ is a copula.}\end{lemma}
 
-Since a copula is nothing but a multivariate CDF, the proof is easily deduced from elementary proofs in probability. The following lemma is also well-known:
+It is easy to prove that the resulting mixture satisfies all points of the analytic definition of a copula\cite{nelsen1999introduction}. The following lemma is also well-known:
 
 \begin{lemma}[Probability integral transform]\label{cdfvariable}{Let R be a random variable with a continuous distribution, and $f_R$ be its continuous CDF. Then U = $f_R$(R) follows a standard uniform distribution.}\end{lemma}
 
 Since copulas are essentially used to model dependence,  they are usually associated with a set of random variables. Let $p \in \mathbb{N^*}$ and $I = \{1, 2, ..., p\}$. Given a set of random variables $(X_i)_{i \in I}$, the corresponding copula is a multivariate function $C$ such as:
 
 \begin{center}
-C : $\mathbb{R}^p$ \rightarrow $[0,1]$, x \rightarrow C(f_{X_1}(x_1), f_{X_2}(x_2), ... , f_{X_p}(x_p)$)
+C : $\mathbb{R}^p$ \rightarrow $[0,1]$, $x \rightarrow C(f_{X_1}(x_1), f_{X_2}(x_2), ... , f_{X_p}(x_p)$)
 \end{center}
 
 This is well-defined thanks to \ref{cdfvariable}. \cite{unifmarginals} explains the importance of having standard uniform marginal distributions. The variables inside the copula are called \textbf{latent variables} associated with $(X_i)_{i \in I}$. Some plots about copulas and the relationship between the observed variables and the corresponding latent variables are be found in Appendix.\\
@@ -534,23 +274,15 @@ Hence the main purpose here is to make an assumption on the type of dependency b
 \noindent \textbf{Gaussian copulas}
 \bigskip
 
-Gaussian copulas are one of the simplest copulas. Let $C_{\rho}$ denote a Gaussian copula of parameter $\rho$, $\phi_{p(\rho)}$ being the multivariate normal distribution of zero-mean and standard deviation $\rho$, and $\phi$ being the standard normal distribution (of zero-mean and standard deviation 1). Then:
+Gaussian copulas are one of the simplest copulas. Let $C_{\rho}$ denote a Gaussian copula of parameter $\rho$, $\phi_{p, \rho}$ being the $p$-variate normal distribution of zero-mean and standard deviation $\rho$, and $\phi$ being the standard normal distribution (of zero-mean and standard deviation 1). Then:
 
-\begin{definition}[Gaussian copula]\label{gaussiancopula}{Let $(U_i)_{i \in I} = (f_{X_i}(X_i))_{i \in I}$ be a set of random variables following a standard uniform distribution, and C be the copula associated with the variables $(X_i)_{i \in I}$. Let $u \in [0,1]^p$. Then:\\$C_{\rho}(u_1, u_2, ..., u_p) = \phi_{p(\rho)}(\phi^{-1}(U_1) = \phi^{-1}(u_1), \phi^{-1}(U_2) = \phi^{-1}(u_2), ..., \phi^{-1}(U_p) = \phi^{-1}(u_p))$}\end{definition}
+\begin{definition}[Gaussian copula]\label{gaussiancopula}{Let $(U_i)_{i \in I} = (f_{X_i}(X_i))_{i \in I}$ be a set of random variables following a standard uniform distribution, and C be the copula associated with the variables $(X_i)_{i \in I}$. Let $u \in [0,1]^p$. Then:\\$C_{\rho}(u_1, u_2, ..., u_p) = \phi_{p, \rho}(\phi^{-1}(U_1) = \phi^{-1}(u_1), \phi^{-1}(U_2) = \phi^{-1}(u_2), ..., \phi^{-1}(U_p) = \phi^{-1}(u_p))$}\end{definition}
 
 Thus I perform another variable transformation, as done in \cite{zhang2017classification}: I denote from now the latent variables $(Z_i)_{i \in I}$, such as $\forall i \in I, Z_i = \phi(f_{X_i}(X_i))$. 
 
-\bigskip
-\noindent \textbf{Estimation of the parameters}
-\bigskip
-
-I would like to compute the values of the parameters for the margin and copula functions -for instance, the mean vector and the covariance matrix for Gaussian copulas.  In order to find their values, the (log) \textbf{likelihood function} of the copula can be maximized, respect to the set of all parameters, but for Gaussian copulas, it has no closed form. There are many strategies to avoid this issue; for instance, a heuristic estimation method, called Inference Functions for Margins (IFM), suggested by \cite{joe1996estimation}, is to find the best estimators of the margin parameters, by maximizing the likelihood function of each of the margins, and then use them in the copula likelihood function to find the copula parameters with maximum likelihood estimation. This method is computationally less costly, and is considered a good heuristic method\cite{bouye2000copulas}, although it does not give the exact solution. Other methods also exist, see \cite{yan2007enjoy}.\\
-
-Mainly in order to have a reasonable runtime, and avoid the problem of initialization for optimization methods, I decided to estimate the margin parameters and the copula parameters with provided non-optimization methods\cite{yu2013shrinkage}\cite{schafer2005shrinkage} (see Appendix for further information). These estimates are also proven to be more robust, and avoid the problem to deal with singularities when fitting the covariance matrix. This issue cannot actually be ignored, because gene expression matrices have usually a lot of null values, due to dropout events, for instance.\\
-
 \section{Model}
 
-Given a cell $j$, it models the probability distribution of expression level for a set of genes; let us number the set of considered genes. Let $X_j \in (\mathbb{R}^{+})^{p} = (X_{1,j}, X_{2,j}, ..., X_{p,j})$ be the random vector associated to the cell, where $X_{i,j}$ is the random variable associated to the expression level of gene $i$ in cell/condition $j$, and $p$ the cardinal of the set of genes. The probability distribution $\mathbb{P}_j$ of expression level in this cell is:
+Given a cell $j$, it models the probability distribution of expression level for a set of genes; let us number the set of considered genes. Let $X_j \in (\mathbb{R}^{+})^{p} = (X_{1,j}, X_{2,j}, ..., X_{p,j})$ be the random vector associated with cell $j$, where $X_{i,j}$ is the random variable associated with the expression level of gene $i$ in cell/condition $j$, and $p$ the cardinal of the set of genes. The probability distribution $\mathbb{P}_j$ of expression level in this cell is:
 
 \begin{center}
 \begin{equation}
@@ -565,14 +297,14 @@ $& =$ \textit{Prob}$(X_{1,j} = x_1, X_{2,j} = x_2, ..., X_{p,j} = x_p)$
 \noindent \textbf{Main idea}
 \bigskip
 
-Considering their expression levels across all cells, genes can be divided in two groups: whether they have been subject to a dropout phenomenon. Considering their \textit{relative} expression values in a given cell, they can be divided into mildly-expressed and highly-expressed genes. I call \textit{cell pattern} the binary vector, having as many components as features in the dataset, where a case is set to 1 if the associated feature is considered highly-expressed in this cell, 0 otherwise.\\
+Considering their expression levels across all cells, genes can be divided in two groups, whether they have been subject to a dropout phenomenon. Considering their \textit{relative} expression values in a given cell, they can be divided into mildly-expressed and highly-expressed genes. I call \textit{cell pattern} the binary vector, having as many components as features in the dataset, where a case is set to 1 if the associated feature is considered highly-expressed in this cell, 0 otherwise.\\
 
-The main assumption is, as written in one of the first sections, cell functions depends on the gene expression profile of the cell; thus I introduce the concept of cell pattern, which is close -in spirit- to the gene pattern implementation in \cite{satija2015spatial}. The gene expression probability distributions, for each cell, will depend on the cell patterns found, which is inspired by the probability distributions conditioned on gene classes like in \cite{barash2002context}.\\
+The main assumption is, as written in one of the first sections, cell functions depends on the gene expression profile of the cell; thus I introduce the concept of cell pattern, which is close -in spirit- to the gene pattern implementation in \cite{satija2015spatial}. The gene expression probability distributions, for each cell, will depend on the cell patterns found, which is inspired by the probability distributions conditioned on gene classes like in \cite{barash2002context}. This idea of "active" and "inactive" genes is actually really common in systems biology\cite{dunn2014defining}, and seems to rely on a relevant biological assumption on the way gene regulation is organized.\\
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.35]{illustrations/densityCionaLogNorm.png}
-\caption{Result of kernel density estimation\cite{parzen1962estimation} (on n=846 points) applied on log-normalized gene expression values (that belong to the interval (3.06,3.11]) from the Ciona\cite{suyama2016singlecell} scRNAseq dataset. Kernel estimation is a method used to estimate the density function of a random variable (here, the expression value of a gene in a given cell) from a sample. The red vertical line is the threshold found by the MAST package (see next section).}
+\caption{Result of kernel density estimation\cite{parzen1962estimation} (on n=846 points) applied on log-normalized gene expression values (that belong to the interval (3.06,3.11]) from the Ciona\cite{suyama2016singlecell} scRNAseq dataset. Kernel estimation is a method used to estimate the density function of a random variable (here, the expression value of a gene in a given cell) from a sample. The red vertical line is the threshold found by the MAST package (see Figure \ref{densityCiona2} in Appendix).}
 \label{densityCiona}
 \end{figure}
 
@@ -589,7 +321,7 @@ The joint probability distribution of the expression levels for all genes in a g
 $\forall x, x' \in (\mathbb{R}^{+})^{p}, \forall k, l,\\ $\textit{Prob}$(X_k = x, X_l = x') = \mathbb{P}_k(X_k = x) \times \mathbb{P}_l(X_l = x') $
 \end{center}
 
-Note that this does not actually stand in practice (see plots in Appendix). But since the correlation between cell types is actually the point of gene expression clustering, there is no convincing prior hypothesis on cell correlation that does not imply using the cell labels.
+Note that this does not actually stand in practice (see cell correlation plots in Appendix). But since the correlation between cell types is actually the point of gene expression clustering, there is no convincing prior hypothesis on cell correlation that does not imply using the cell labels.
 
 \item \textbf{Non-independence of gene expression values between genes in a same cell}.\\
 
@@ -601,7 +333,7 @@ Note that this does not actually stand in practice (see plots in Appendix). But 
 
 \item \textbf{Hypotheses on the marginal and joint probability distribution models} (see following section "The distribution model").
 
-\item \textbf{Mutual independence of the dropout events (resp. mild or high gene expressiveness events)}: this hypothesis is -implicitly- made about the dropout events in \cite{kharchenko2014bayesian}, when using binary logistic regression to determine the dropout probability for a given gene (see discussion for further insight on this hypothesis).
+\item \textbf{Mutual independence of the dropout events (resp. mild or high gene expressiveness events)}: this hypothesis is -implicitly- made about the dropout events in \cite{kharchenko2014bayesian}, when using binary logistic regression to determine the dropout probability for a given gene.
 \end{enumerate}
 
 \bigskip
@@ -612,7 +344,7 @@ Note that this does not actually stand in practice (see plots in Appendix). But 
 \item Let $|S|$ be the \textit{cardinal}, that is, the number of elements in the set S.
 \item Let M be the input gene expression matrix of dimensions $p \times m$ (with $p >> m$), with features as rows, and conditions as columns. The set of rows for column $j$ is $(M_{i,j})_i$ = $\{M_{1,j}, M_{2,j}, M_{3,j}, ..., M_{p,j}\}$. The set of columns for row $i$ is $(M_{i,j})_j$ = $\{M_{i,1}, M_{i,2}, M_{i,3}, ..., M_{i,m}\}$.
 \item As a general rule, the letter $i$ refers to a gene; the letters $j$ and $k$ refer to a condition or cell.
-\item Let $(X_{i,j})_{i,j}$ = $\{X_{1,1}, X_{2,1}, ..., X_{p,1},$ $X_{1,2}, X_{2,2}, ..., X_{p,2}, ...,$ $X_{1,m}, X_{2,m}, ..., X_{p,m}\}$ be the set of nonnegative real-valued random variables associated to the counts $(M_{i,j})_{i,j}$ = $\{M_{1,1}, M_{2,1}, ..., M_{p,1},$ $M_{1,2}, M_{2,2}, ..., M_{p,2}, ...,$ $M_{1,m}, M_{2,m}, ..., M_{p,m}\}$. 
+\item Let $(X_{i,j})_{i,j}$ = $\{X_{1,1}, X_{2,1}, ..., X_{p,1},$ $X_{1,2}, X_{2,2}, ..., X_{p,2}, ...,$ $X_{1,m}, X_{2,m}, ..., X_{p,m}\}$ be the set of nonnegative real-valued random variables associated with the counts $(M_{i,j})_{i,j}$ = $\{M_{1,1}, M_{2,1}, ..., M_{p,1},$ $M_{1,2}, M_{2,2}, ..., M_{p,2}, ...,$ $M_{1,m}, M_{2,m}, ..., M_{p,m}\}$. 
 \item Let $\phi(\mu, \rho)$ be the multivariate cumulative function of a normal distribution with parameters (mean = $\mu$, variance = $\rho$), and $\phi$ the univariate standard normal distribution (of mean 0 and variance 1).
 \item Let $P_k$ be the gene expression pattern for cell $k$, and $P$ be the matrix of all the gene expression patterns. 
 \item For a certain cell $k$, let $Y_k$ be such as:
@@ -624,14 +356,14 @@ Note that this does not actually stand in practice (see plots in Appendix). But 
 
 \item Let $f_{i,k} = f_{Y_{i,k}}$, and $f_k = f_{Y_{1,k}, ..., Y_{p,k}}$.
 \item Let $Z_{i,k}$ the so-called latent random variable associated with $X_{i,k}$: $Z_{i,k} = \phi(f_{i,k}(Y_{i,k}))$, and $Z_k$ the latent random variable associated with $Y_k$: $Z_k$ = ($Z_{1,k}$, ..., $Z_{p,k}$).
-\item Let $T_{i, j}$ denote the \textit{activation threshold} for cell $j$ and gene $i$, that is, one of the lowest points of the valley in Figure \ref{}, computed on normalized gene expression values, and let $Q$, called \textit{pattern-oriented threshold matrix} be defined such as $Q_{i,k} = T_{i, k}$ if $P_{i,k} = 0$, and $Q_{i,k} = -T_{i, k}$ otherwise.
+\item Let $T_{i, j}$ denote the \textit{activation threshold} for cell $j$ and gene $i$, that is, one of the lowest points of the valley in Figure \ref{densityCiona}, computed on normalized gene expression values, and let $Q$, called \textit{pattern-oriented threshold matrix} be defined such as $Q_{i,k} = T_{i, k}$ if $P_{i,k} = 0$, and $Q_{i,k} = -T_{i, k}$ otherwise.
 \end{itemize}
 
 \bigskip
 \noindent \textbf{The distribution model}
 \bigskip
 
-The flexibility of the copulas allows the separate selection of the joint and the marginal distribution models. In my model, each cell is modeled by a copula, which is the joint probability distribution for the gene expression for all features in this cell. That is, the margins for each copula are associated to the expression value of each gene in the dataset. So here, each copula, associated with a given cell $j$, is the cumulative joint probability distribution function of gene expression value for each gene in cell $j$.
+The flexibility of the copulas allows the separate selection of the joint and the marginal distribution models. In my model, each cell is modeled by a copula, which is the joint probability distribution for the gene expression for all features in this cell. That is, the margins for each copula are associated with the expression value of each gene in the dataset. So here, each copula, associated with a given cell $j$, is the cumulative joint probability distribution function of gene expression value for each gene in cell $j$.
 
 \bigskip
 \noindent \textit{The marginal probability distribution (for each gene, in a given cell)}
@@ -639,7 +371,7 @@ The flexibility of the copulas allows the separate selection of the joint and th
 
 Gene expression is subject to dropout phenomena\cite{kharchenko2014bayesian}, and is intrinsically bimodal\cite{finak2015mast}\cite{bessarabova2010bimodal} -and sometimes even multimodal\cite{ochab2010bimodal}.\\
 
-According to \cite{kharchenko2014bayesian}, the most probable model for gene expression \textit{count} values (i.e. discrete values) $X_{i,j}$, for a given gene in a given cell, would be a mixture of a low-magnitude Poisson distribution, to model the gene expression values subject to dropout, and negative-binomial distribution, to take into account the overdispersion of gene expression values for a successful amplification, using as mixing rate the dropout probability for this gene in this cell:
+According to \cite{kharchenko2014bayesian}, the most probable model for gene expression \textit{count} values (i.e. discrete values) $X_{i,j}$, for a given gene in a given cell, would be a mixture of a low-magnitude Poisson distribution, to model the gene expression values subject to dropout, and negative-binomial distribution, to take into account the overdispersion of gene expression values for a successful amplification (i.e., non-dropout event), using as mixing rate the dropout probability for this gene in this cell:
 
 \begin{definition}[Discrete gene expression value model]\label{genexpressiondiscrete}{Let $p_{i,j}$ be the dropout probability for gene $i$ in cell $j$. Then:
 \begin{center}$\forall x \in \mathbb{N}, $\textit{Prob}$(X_{i,j} = x) = p_{i,j} \times $\textit{Poisson}$(\lambda_{i,j}) + (1-p_{i,j}) \times $\textit{NegBin}$(r_{i,j}, p_{i,j})$\end{center}}\end{definition}
@@ -656,15 +388,17 @@ When a gene is subject to a dropout phenomenon, only low background noise is det
 $\forall i,j \in \{1, 2, ... p\} \times \{1, 2, ..., m\}, \lambda_{i,j} = \lambda_0 < 1$\\
 \end{center}
 
-Instead of using $r$ and $p$ parametrization for the Negative Binomial distribution, I use the mean-overdispersion ($\mu, \delta$) parametrization for negative-binomial\cite{rodriguez2013models}, which is easier to interpret (see Appendix for the equivalence between the two parametrizations).\\
+Instead of using $r$ and $p$ parametrization for the Negative Binomial distribution, I use the mean-overdispersion ($\mu, \delta$) parametrization for negative-binomial\cite{rodriguez2013models}, which is easier to interpret.\\
 
 However, the marginal distributions need to be continuous in order to use a copula -and to estimate its parameters more easily. It is not continuous now since the Poisson and Negative binomial distributions are discrete. Furthermore, I need to model also the gene expression values when the values are normalized, so not necessarily integers anymore. And the Poisson distribution (thus the Negative Binomial one, since the latter is a mixture of Poisson and Gamma distributions) is sensible to scale modifications.\\
 
-Thus I use a standard Gamma distribution, that is, with shape parameter $\lambda$, and rate parameter 1, to model the Poisson distribution, and a regular Gamma distribution, with parameters $\alpha$ (shape) and $\beta$ (rate) for the Negative Binomial distribution (Gamma distribution has been actually widely studied as an approximation for this distribution\cite{guenther1972simple}\cite{best1974improved}), where the density function for a Gamma distribution is:
+Thus I use a standard Gamma distribution, that is, with shape parameter $\lambda$, and rate parameter 1, to model the Poisson distribution, and a regular Gamma distribution, with parameters $\alpha$ (shape) and $\beta$ (rate) for the Negative Binomial distribution, where the density function for a Gamma distribution is:
 
 \begin{definition}[Gamma distribution]\label{gamma}{~\\\begin{center}$\forall X \thicksim \Gamma(\alpha, \beta), \forall x \in \mathbb{R}^+,$ \textit{Prob}$(X = x) = \frac{\beta^{\alpha} \times x^{\alpha-1} \times e^{-\beta \times x}}{\Gamma(\alpha)}$\end{center}}\end{definition}
 
-Again, the selection of the mean and the (over)dispersion factor ($\mu, \delta$) boils down to select parameters ($\alpha, \beta$) (see Appendix). Henceforth the marginal distribution for gene expression and variable $X_{i,j}$ is:
+Gamma distribution has been actually widely studied as an approximation for this distribution\cite{guenther1972simple}\cite{best1974improved}.\\
+
+Again, the selection of the mean and the (over)dispersion factor ($\mu, \delta$) boils down to select parameters ($\alpha, \beta$) (see \emph{utils\_computation.R} file in the Github repository associated with the algorithm). Henceforth the marginal distribution for gene expression and variable $X_{i,j}$ is:
 
 \begin{definition}[Continuous gene expression value model)]\label{genexpressioncontinuous}{Let $p_{i,j}$ be the dropout probability for gene $i$ in cell $j$. Then:
 \begin{center}$\forall x \in \mathbb{N}, $\textit{Prob}$(X_{i,j} = x) = p_{i,j} \times $\textit{Gamma}$(\lambda_0, 1) + (1-p_{i,j}) \times $\textit{Gamma}$(\mu_{i,j}, \delta_{i,j})$\end{center}}\end{definition}
@@ -679,7 +413,7 @@ According to the general assumption about the relationship between cell function
 
 I denote such a bimodal Gaussian copula of means $\mu_1, \mu_2$, with mixing parameter $\alpha$ and covariance matrix $\Sigma$, $C_{\mu_1, \mu_2, \alpha, \Sigma}$.\\
 
-Please keep in mind that the variables associated with the copulas are $(Y_{i,j})_{i \leq p, j \leq m}$ (see notations), because what I want to compute is the probability of each gene to have an expression value above or below their associated activation threshold (see the following sections). Since for all $i,j \in \{1,2,...,p\} \times \{1,2,...,m\}$, $Y_{i,j} = X_{i,j}$ if $P_{i,j} = 0$, and $Y_{i,j} = -X_{i,j}$ otherwise, the associated marginal cumulative distributions $f_{Y_{i,j}}$ are easy to deduce from the previous section (see Appendix). The latent variables associated are thus, for all $k \leq m$, $(Z_{i,k})_{i \in I} = (\phi(f_{Y_{i,k}}(Y_{i,k})))_{i \in I}$.
+Please keep in mind that the variables associated with the copulas are $(Y_{i,j})_{i \leq p, j \leq m}$ (see notations), because what I want to compute is the probability of each gene $i$ to have an expression value $X_i$ above (if the gene is considered active) or below their associated activation threshold $Q_i$. Since for all $i,j \in \{1,2,...,p\} \times \{1,2,...,m\}$, $Y_{i,j} = X_{i,j}$ if $P_{i,j} = 0$ (gene $i$ \emph{inactive} in cell $j$), and $Y_{i,j} = -X_{i,j}$ otherwise, the associated marginal cumulative distributions $f_{Y_{i,j}}$ are easy to deduce from the previous section (see \emph{utils\_computation.R} file in the Github repository associated with the algorithm). The latent variables associated are thus, for all $k \leq m$, $(Z_{i,k})_{i \in I} = (\phi(f_{Y_{i,k}}(Y_{i,k})))_{i \in I}$.
 
 \bigskip
 \noindent \textit{The final model}
@@ -687,7 +421,7 @@ Please keep in mind that the variables associated with the copulas are $(Y_{i,j}
 
 For each cell, the final copula distribution model is:
 
-\begin{definition}[Final gene expression distribution model]\label{cellcopula}{Let $j$ be the index of a given cell in the dataset. If $q$ is a vector of gene expression in this cell ($q \in \mathbb{R}^{+p}$):\begin{center} 
+\begin{definition}[Final gene expression distribution model]\label{cellcopula}{Let $j$ be the index of a given cell in the dataset. If $q$ is a vector of gene expression values in this cell ($q \in \mathbb{R}^{+p}$):\begin{center} 
 \textit{Prob}($Y_j \leq q$) = $C_j_{\mu_1_j, \mu_2_j, \alpha_j, \Sigma}(Z_{1,j} \leq \phi(f_{Y_{1,j}}(q_1)), Z_{2,j} \leq \phi(f_{Y_{2,j}}(q_2)), ..., Z_{p,j} \leq \phi(f_{Y_{p,j}}(q_p)))$\end{center}}\end{definition}
 
 To know more about the parameter value estimation, see Appendix.
@@ -696,15 +430,15 @@ To know more about the parameter value estimation, see Appendix.
 \noindent \textbf{Cell comparison}
 \bigskip
 
-Now that I have defined a gene expression value probabilistic model, that focuses on the \emph{relative} gene expression levels, to tackle the issue highlighted in the introduction, I would like to be able to compare gene expression profiles between cells, to perform cluster analysis. Intuitively, I consider two cells to be similar if they have the same cell pattern, as computed in matrix P, and the more the probability -implicitly conditioned on the parameters of the distribution model- of both gene expression profiles having this pattern is high, the more they are similar (see last part of this section for a discussion of this hypothesis). This intuition arises from the fact that cells are usually considered similar if they exhibit gene expression "trend similarity"\cite{jaskowiak2014selection}, that is, similar gene expression profiles (i.e. the proportions of gene expression are roughly the same). That would mean that they have similar functions.\\
+Now that I have defined a gene expression value probabilistic model, that focuses on the \emph{relative} gene expression levels, to tackle the issue highlighted in the introduction, I would like to be able to compare gene expression profiles between cells, to perform cluster analysis. Intuitively, I consider two cells to be similar if they have the same cell pattern, as computed in matrix P, and the more the probability -implicitly conditioned on the parameters of the distribution model- of both gene expression profiles having this pattern is high, the more they are similar (see last part of this section for a discussion of this hypothesis). This intuition arises from the fact that cells are usually considered similar if they exhibit gene expression "trend similarity"\cite{jaskowiak2014selection}, that is, similar gene expression profiles (i.e. the proportions of gene expression are roughly the same for every gene). That would mean that they have similar functions.\\
 
 \begin{definition}[Gene expression profile and cell pattern]\label{profilepattern}{A gene expression profile G -a $p$-sized nonnegative real-valued vector- suits a given pattern P -$p$-sized binary vector- respect to threshold vector T -a $p$-sized nonnegative real-valued vector- if and only if:\begin{center}
 $\forall i \in \{1,2,...,p\},$ if $P_i = 1$, then $G_i > T_i$, and otherwise $G_i \leq T_i$\end{center}}\end{definition}
 
-\begin{definition}[Cell similarity]\label{cellsimilarity}{Let $k,l$ be two cells. $k$ and $l$ are similar iff:\\
+\begin{definition}[Cell similarity]\label{cellsimilarity}{Let $k,l$ be two cells. $k$ and $l$ are similar iff both patterns are equal, and both gene expression profiles suit the common pattern respect to the predefined threshold vector T, that is, iff both following conditions are satisfied:\\
 \begin{enumerate}
 \item $k = l$
-\item The probability of the event "$\forall i \in \{1,2,...,p\}, P_{i,k} = P_{i.l}$ and\\- either $P_{i,k} = 1$ and $X_{i,k} > T_{i}, X_{i,l} > T_{i}$,\\- or either $P_{i,k} = 0$ and $X_{i,k} \leq T_{i}, X_{i,l} \leq T_{i}$" is "high enough".
+\item The probability of the event "$\forall i \in \{1,2,...,p\}, P_{i,k} = P_{i,l}$ and\\- either $P_{i,k} = 1$ and $X_{i,k} > T_{i}, X_{i,l} > T_{i}$,\\- or either $P_{i,k} = 0$ and $X_{i,k} \leq T_{i}, X_{i,l} \leq T_{i}$" is "high enough".
 \end{enumerate}}\end{definition}
 
 Let us try to figure out how to compute similarity value in the second case. Let $I = \{1,2, ...,p\}$, $U_0 = "\forall i \in \{i \in I | P_{i,k} = 0\}, X_{i,k} \leq T_i, X_{i,l} \leq T_i"$, and $U_1 = "\forall i \in \{i \in I | P_{i,k} = 1\}, X_{i,k} > T_i, X_{i,l} > T_i"$. These events can be rewritten with random variables $(Y_{i,k})_{i,k}$ and real numbers $(Q_{i,k})_{i,k}$ (see previous section about the notations). I use the pairwise coordinate order on vectors:
@@ -732,7 +466,7 @@ using assumed cell mutual independence.
 
 The algorithm I suggest is a model-based hierarchical clustering algorithm\cite{fraley2002model}, that is, it tries to infer the similarities between elements by modeling the distribution generating each group. Copulas have actually already been used for clustering/classification\cite{stitou2009copulas}\cite{kosmidis2014model}, and recently were applied to RNA-seq data classification\cite{zhang2017classification}.\\
 
-Mine is divided in five parts, which details can be found in Appendix. I will use the same notations defined in the last section.
+\textbf{Mine} is divided in five parts, which details can be found in Appendix. I will use the same notations defined in the last section.
 
 \bigskip
 \noindent \textbf{Input}
@@ -829,7 +563,7 @@ There are also other values used for clustering and feature selection, that can 
 
 Note that it is in fact a mixture model with a given probability distribution (Negative Binomial alike for instance) and the null distribution. But, as written previously, contrary to the null distribution, the Poisson distribution allows to account for low background noise\cite{kharchenko2014bayesian}, if its parameter value is low enough.\\
 
-Another issue of my model is that I have to compute the best value for the mixture rate parameter. The hurdle (most of the time set at zero) model is a way to overcome this problem; given two density distribution functions $f_1$ and $f_2$ to mix, and a nonnegative real-valued random variable R, the associated hurdle model is\cite{arnold2009advances}:
+Another issue of my own model is that I have to compute the best value for the mixture rate parameter. The hurdle (most of the time set at zero) model is a way to overcome this problem; given two density distribution functions $f_1$ and $f_2$ to mix, and a nonnegative real-valued random variable R, the associated hurdle model is\cite{arnold2009advances}:
 
 \begin{definition}[General hurdle model]\label{hurdlemodel}{ ~\\
 
@@ -837,7 +571,7 @@ Another issue of my model is that I have to compute the best value for the mixtu
 \begin{center} $\forall r \in \mathbb{R}^+, r > 0$ \textit{Prob}($R = r$) = $\frac{1-f_1(0)}{1-f_2(0)} \times f_2(r)$ \end{center}
 }\end{definition}
 
-For instance, $f_1$ would be the Poisson density function, and $f_2$ be the Negative Binomial density function. But note that this model assumes that the dropout part (that is, the Poisson component of the mixture) is the only one source of null gene expression values. But I consider that transcriptionally silent genes, that is, whose sequence does not appear in the mRNA molecule, also give quasi-zero values\cite{kharchenko2014bayesian}. 
+For instance, $f_1$ would be the Poisson density function, and $f_2$ be the Negative Binomial density function. But note that this model assumes that the dropout part (that is, the Poisson component of the mixture) is the only one source of null gene expression values. But I consider that transcriptionally silent genes, that is, whose sequence does almost never appear in the mRNA molecule, also give quasi-zero values\cite{kharchenko2014bayesian}. 
 
 \item I could have used the two continuous counterparts of Poisson and Negative Binomial built by \cite{ilienko2013continuous}\cite{chandra2012continuous}\cite{abid2016continuous}, but they are computationally expensive, and since I just want to fit the data, I do not need the asymptotic limits of the probability distributions, but only the assumptions made on variance and mean (and not median, for instance). Estimation of the parameters for copulas is easier when the marginals are continuous, especially for the computation of the gradient needed for optimization procedures.\\
 
@@ -863,11 +597,24 @@ The algorithm has been implemented in R, and the source code can be found here: 
 
 Packages: R\cite{baser}, MAST\cite{mastr}, doParallel\cite{doparallelr}, mvtnorm\cite{mvtnormr}, caret\cite{caretr}, Matrix\cite{matrixr}, corpcor\cite{corpcorr}, fastcluster\cite{fastclusterr} and foreach\cite{foreachr}.\\
 
+\section{Discussion}
+
+When tested on a dataset, the algorithm returns inconsistent results.\\ %%TODO results
+
+Adding to the issues discussed above, some problems can be listed:\\
+
+\begin{itemize}
+\item There is a documented issue on the cumulative probability function computation for the Gamma distribution in R\cite{pgammaissue}. I learned about this issue quite late in my internship, and I thought I did not have time to try and code the algorithm on my own.
+\item The initialization/estimation of the parameters for the distribution may be incorrect. While I am rather confident of the shrinkage estimation methods, because they have been tested on same-type biological data in peer-reviewed articles, my choice of the mean vectors parameters may be wrong (see Appendix).
+\end{itemize}
+
+Despite of this, I think the algorithm rely on rather relevant biological assumptions and intuitions, and could be run in a reasonable amount of time, provided some more work.
+
 \chapter{Benchmark on clustering algorithms}
 
 There exist currently lots of algorithms, each of them using various methods, developed to tackle cell clustering for single-cell RNA data, even through it is still quite a recent field. However, none of them has been selected yet as the reference clustering algorithm. I performed a benchmark, including the most known algorithms in R targeted at scRNAseq data, in order to compare the clustering results, and to check the correctness of the resulting functional cell families found.\\
 
-The tested algorithms in the following benchmark are SC3, pcaReduce, tSNE+K-means, tSNE+DBSCAN, K-means, SNN-Cliq, SINCERA, SEURAT, NMF and Fuzzy C-means, and have been briefly introduced in the section \textbf{Cluster analysis}.\\
+The tested algorithms in the following benchmark are SC3, pcaReduce, tSNE+K-means, tSNE+DBSCAN, K-means, SNN-Cliq, SINCERA, SEURAT, NMF and Fuzzy C-means, and are briefly introduced in the \textbf{Benchmark} chapter in Appendix.\\
 
 \section{Pipeline}
 
@@ -875,11 +622,11 @@ The tested algorithms in the following benchmark are SC3, pcaReduce, tSNE+K-mean
 \noindent \textbf{Method}
 \bigskip
 
-This benchmark tests the ability of one algorithm to find consistent clusters of cells/conditions (\textbf{accuracy test}), respect to the biological data, the time needed to compute the answer in function of the dimensions of the gene expression matrix (\textbf{time complexity test}), and the stability of the resulting clustering (\textbf{stability test}). For more insight on the datasets, see Appendix.\\
+This benchmark tests the ability of one algorithm to find consistent clusters of cells/conditions (\textbf{accuracy test}), respect to the biological data, the time needed to compute the answer in function of the dimensions of the gene expression matrix (\textbf{time complexity test}), and the stability of the resulting clustering, that is, the returned clustering is consistent from one iteration of the algorithm to another (\textbf{stability test}). For more insight on the datasets, see Appendix.\\
 
 For each dataset, I looked up in the corresponding article the expected number of clusters, and tried to find a "reference clustering", that is, the annotation of the subpopulations in the dataset. Sometimes the number of clusters does not match the number of subpopulations, but I assumed that the annotation into subpopulations is still either a subclustering or a overclustering of the real reference clustering, and thus could be helpful to determine if the algorithm gave consistent results with the data. For more details about the data, please check the Excel file at the following link: {\url{https://github.com/oist-gene-clustering/geneclusteringbenchmark}}\\ 
 
-To be able to compare fairly the different algorithms, I tried to find the best parameters for each dataset and each algorithm (which can be found in the Excel file previously quoted), that is, which seemed to give the best results according to the PCA and tSNE plots, and giving a number of clusters as close as possible to the expected one. Of course, these plots can only be considered indications and have bias, but since I could not get access to the real reference clustering, I thought it would be wiser not to rely too much on the latter.\\
+To be able to compare fairly the different algorithms, I tried to find the best parameters for each dataset and each algorithm (which can be found in the Excel file previously quoted), that is, which seemed to give the best results according to the PCA and tSNE plots, and giving a number of clusters as close as possible to the expected one. Of course, these plots can only be considered indications and have bias, but since I could not get access to the real reference clustering, I thought it would be wiser not to rely too much on the reference clustering I have chosen.\\
 
 Eventually, I ran again several times all the algorithms on one dataset (the one having the highest mean accuracy measure), in order to observe the variation of accuracy between runs.
 
@@ -887,7 +634,7 @@ Eventually, I ran again several times all the algorithms on one dataset (the one
 \noindent \textit{Accuracy test}
 \bigskip
 
-I tested on each dataset each algorithm. For indeterministic algorithms, I used 100 runs and kept the clustering giving the highest Adjusted Rand Index\cite{rand1971objective} (ARI, computed with MClust\cite{fraley1999mclust}) with the reference clustering I fixed for each dataset. Except for Seurat, SINCERA and SNN-Cliq, all algorithms are indeterministic. 
+I tested on each dataset each algorithm. For indeterministic algorithms, I used 100 runs and kept the clustering result giving the highest Adjusted Rand Index\cite{rand1971objective} (ARI, computed with MClust\cite{fraley1999mclust}) with the reference clustering I fixed for each dataset. Except for Seurat, SINCERA and SNN-Cliq, all algorithms are indeterministic. 
 
 \begin{definition}[Adjusted Rand Index (ARI)]\label{ARI}{
 Let $X = \{X_1, X_2, ..., X_r\}$ and $Y = \{Y_1, Y_2, ..., Y_s\}$ be two clusterings of the same dataset $\{x_1, x_2, ..., x_m\}, m, r, s \in \mathbb{N^{*}}$. For all $k,l \in \{1,2,...,r\} \times \{1,2,...,s\}$, let $n_{k,l} = |X_k \cap Y_l|$ be the number of common points in clusters $X_k$ and $Y_l$, and $a_k = \sum{_{l \leq s}}{n_{k,l}}$, and $b_l = \sum{_{k \leq r}}{n_{k,l}}$. Then:}\end{definition}\\
@@ -912,7 +659,7 @@ Indeterministic algorithms have been iterated 100 times on the Biase dataset. Th
 
 \section{Results}
 
-See Appendix for more details about the ranking.
+See Appendix for more details about the ranking. NMF and SNN-Cliq do not appear in this ranking, because both of them run very slowly on the Klein dataset (and a few more for NMF, see the Excel file in the associated Github repository), thus making them not comparable directly with the other algorithms. See plots in the Github repository for the results with these two algorithms.
 
 \begin{table}[H]
 \centering
@@ -973,18 +720,6 @@ See Appendix for more details about the ranking.
 \parbox[c]{3cm}{} &
 \parbox[c]{3cm}{Seurat\\(avg. time: 13.74s)}\\
 \hline
-\parbox[c]{2cm}{\textbf{\#9}} & 
-\parbox[c]{3cm}{} & 
-\parbox[c]{3cm}{} & 
-\parbox[c]{3cm}{} &
-\parbox[c]{3cm}{}\\
-\hline
-\parbox[c]{2cm}{\textbf{\#10}} & 
-\parbox[c]{3cm}{} & 
-\parbox[c]{3cm}{} & 
-\parbox[c]{3cm}{} &
-\parbox[c]{3cm}{}\\
-\hline
 \end{tabular}
 \label{results}
 \end{table}
@@ -997,7 +732,7 @@ The files used for the benchmark can be found at: {\url{https://github.com/oist-
 
 Packages: R\cite{baser}, SC3\cite{sc3r}, pcaReduce\cite{pcareducer}, pcaMethods\cite{pcamethodsr}, scater\cite{scaterr}, mclust\cite{mclustr}, Rtsne\cite{rtsner}, SINCERA\cite{sincerar}, rPython\cite{rpythonr}, Seurat\cite{seuratr}, pheatmap\cite{pheatmapr}, reshape2\cite{reshape2r}, e1071\cite{e1071r}, dbscan\cite{dbscanr}, NMF\cite{nmfr}, ggplot2\cite{ggplot2r} and RColorBrewer\cite{rcolorbrewerr}.\\
 
-Generally speaking, the main issue with this benchmark is the fact I don't know the true reference clustering. But the ARI may still be relevant since the chosen clusterings are subclusterings or overclusterings. It is also important to take into account the resulting number of clusters compared to the real one. I also learnt that actually the tsne package has unsolved documented bugs (that are explained at \cite{tsnebug}), and since I used tSNE visualization when looking for the best parameters for each algorithm, it may had a influence on the results. For algorithms using tSNE (such as tSNE+K-means and tSNE+DBSCAN), I used the Rtsne package, and no bug in this package has been reported yet.\\
+Generally speaking, the main issue with this benchmark is the fact I don't know the true reference clustering. But the ARI may still be relevant since the chosen clusterings are subclusterings or overclusterings. It is also important to take into account the resulting number of clusters compared to the real one.\\
 
 It can also be seen that, although K-means and Fuzzy K-means give good results when iterated, those two algorithms are quite instable, thus they are not suitable for an exploratory analysis. It can also noticed that most of the algorithms need in input the expected number of clusters. This number can be guessed using gap statistics\cite{hastie2001estimating} or the silhouette measure\cite{rousseeuw1987silhouettes}. For Seurat and SNN-Cliq which do not need this input, it is quite hard actually to find the best parameter value, and nothing but trial-and-error strategy and visualization (with PCA or t-SNE, for instance) can be helpful. Unfortunately, visualization tools can also be biased\cite{wattenberg2016how}.\\
 
@@ -1013,8 +748,8 @@ These are the outcome of this internship:
 \begin{itemize}
 \item A possible pipeline in Python to clean and obtain a gene expression matrix out of raw RNA and single-cell RNA sequencing data.
 \item An online, user-friendly, application in Shiny R for analyze single-cell RNA sequencing data, and perform differential expression analysis, that is crucial for exploratory analysis on the cells and genes involved. Contrary to the other existing applications, the latter allows also to visualize gene expression patterns.
-\item A benchmark performed on several clustering algorithms and single-cell RNA seq datasets. As far as I know, only the SC3 article did such a benchmark.
-\item A new clustering algorithm, focused on gene expression modelling with copulas, while taking into account the characteristics of single-cell seq data.
+\item A benchmark performed on several clustering algorithms and single-cell RNA seq datasets. As far as I know, only the article about the SC3 algorithm\cite{kiselev2016sc3} did such a benchmark.
+\item A new gene expression model and a new clustering algorithm, focused on gene expression modelling with copulas, while taking into account the characteristics of single-cell seq data.
 \end{itemize}
 
 \section{Outlook}
@@ -1023,7 +758,7 @@ What could be done:
 \begin{itemize}
 \item I could give a nicer user interface to the application, and gene expression patterns could be represented on a drawing of the true single cell.
 \item Ideally, I would test the clustering algorithms on the true clusterings. I could also add other sorts of algorithms, such as model-based clustering techniques for instance.
-\item The algorithm I designed should be compared to the other algorithms in the benchmark. It should also be made faster to be useful.
+\item The algorithm I designed should be compared to the other algorithms in the benchmark. It should also be improved and modified -maybe in the parameter initializations- to be useful.
 \end{itemize}
 
 \newpage
@@ -1035,7 +770,7 @@ What could be done:
 
 \appendix
 
-\chapter{Physical characteristics}
+\chapter*{Physical characteristics}
 
 The benchmark has been run with the following hardware configuration:
 
@@ -1062,29 +797,216 @@ The benchmark has been run with the following hardware configuration:
 \end{tabular}
 \end{table}
 
+\chapter{Details about sequencing}
+
+\textbf{RNA Sequencing}
+\bigskip
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1]{illustrations/sequencing.png}
+\caption{General pipeline to get a gene expression matrix from a mRNA fragment\protect{\cite{griffith2015informatics}}}
+\label{sequencing}
+\end{figure}
+
+Sequencing biological material requires several steps (see Figure \ref{sequencing}).\\
+
+\begin{enumerate}
+\item First, the mRNA molecule in the samples are chemically isolated. 
+\item Then, these molecules are used to generate (complementary) DNA (cDNA) via \textbf{reverse-transcription} (the ability of some virus to produce DNA from RNA). 
+\item Later, these cDNA strands are fragmented into \textbf{reads}. Reads are short series of A (which stands for adenine), G (guanine), C (cytosine) and T (thymine) letters resulting from the sequencing of the mRNA strand. Then these reads are sequenced, and the resulting reads are aligned to a reference genome, that is available in a online database such as \textsc{WormBase}\cite{stein2001wormbase} or \textsc{NCBI}\cite{ncbi}, for instance. The best alignment is the one that preserves most the order of the bases in the reference sequence -but the exact definition of the "best alignment" highly depends on the alignment algorithm used. 
+\item Then a gene expression matrix M is computed: each time a read from condition $j$ is aligned to a certain reference sequence corresponding to a specific gene $i$, the associated number $M_{i,j}$ is incremented.
+\end{enumerate}
+
+However, the total number of reads detected may vary from one cell or condition to another. In order to be able to compare gene expression values across several cells, the matrix may be trimmed (to remove outlier cells or genes), and "normalized" to preserve proportionality between gene expression values. There are actually many ways to achieve this normalization\cite{love2014moderated}\cite{chen2014differential}.
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[scale=0.45]{illustrations/alignment.jpg}
+%\caption{Read alignment\protect{\cite{imgAlignment}}}
+%\label{alignment}
+%\end{figure}
+
+\bigskip
+\noindent \textbf{About single-cell RNA sequencing (scRNAseq)}
+\bigskip
+
+scRNAseq is quite a new technology. At first, studying mRNA became affordable thanks to microarrays\cite{chang1983binding}, that started to be widely used in 1995\cite{schena1995quantitative}. This technology used miniaturized and optimized high-throughput screening on arrays of biological data\cite{microarraywiki} (see Figure \label{microarray}). The latter were also used for DNA studies ("DNA microarrays"\cite{southern2001dna}). 
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{illustrations/microarray.jpg}
+\caption{Microarray experiment for mRNA data\protect{\cite{imgMicroarray}}}
+\label{microarray}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{illustrations/pipelinedownstream.png}
+\caption{Possible downstream analysis pipeline after alignment and quality check of the resulting gene expression matrix\cite{poirion2016single}}
+\label{pipeline}
+\end{figure}
+
+At this time, tools for improving downstream analysis (that is, the analysis of the resulting gene expression matrix, see Figure \ref{pipeline}) were needed, and many clustering algorithms\cite{do2008clustering}\cite{dabney2005classification}\cite{eisen1998cluster}\cite{monti2003consensus} and statistical tools\cite{simon2007analysis}\cite{kerr2000analysis} were designed.\\
+
+However, in 2007, \cite{barbazuk2007snp} used RNA-sequencing to detect chromosomal modifications in the transcriptome, via \textbf{reverse transcription} (see previous section). Because of its assets, comparing to microarrays -increased data quality\cite{zhao2014comparison}\cite{wang2009rna}, improved detection of rare transcripts, ...\cite{illuminarnamicroarray}- and the drop in the sequencing price, researchers' interest in regular or bulk RNAseq had soon plummeted in the 2010's and until now\cite{conesa2016survey}\cite{leon2015bayesian}.\\
+
+Today, there are lots of techniques\cite{shapiro2013single} for single-cell RNA sequencing, the first one being Tang et al.\cite{tang2009mrna} (2009), see Figure \ref{historyseq}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1]{illustrations/scrnaseq.jpg}
+\caption{History of scRNAseq and general pipeline to get a set of reads from a single-cell RNA fragment\protect{\cite{kolodziejczyk2015technology}}}
+\label{historyseq}
+\end{figure}
+
+\chapter{Details about cluster analysis}
+
+\textbf{Cluster analysis}, that is, grouping data samples respect to their similarity -same-group samples are more similar in some sense than to samples from other groups- is one of the primary steps for exploring data, and is meant to guide further analysis. Applied to scRNAseq, it may help discovering new cell functional families\cite{jiang2016giniclust}, control data quality\cite{mccarthy2016scater} and delete outlier samples\cite{kiselev2016sc3}, or better understand cell differentiation at a given developmental stage\cite{goolam2016heterogeneity}.\\
+
+The different groups -called \textbf{clusters}- are not known beforehand, neither are the features that can the most reliably discriminate the data samples. As a general rule, data samples are identified to vectors, where each component refers to a certain feature, that may be binary, real-valued, categorical, ... according to the type of data. Thus cluster analysis -also called clustering- boils down to grouping points in a certain mathematical space.\\
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.15]{illustrations/clusteranalysis.jpg}
+\caption{Pipeline of cluster analysis, from the raw data to the clustering validation\protect{\cite{handl2005computational}}}
+\label{clusteranalysis}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{| l | l | l |}
+\hline
+\parbox[c]{5cm}{\textbf{Steps}} & \
+\parbox[c]{5cm}{\textbf{Selection of the\\ following items}} & 
+\parbox[c]{5cm}{\textbf{Corresponding questions}}\\
+\hline
+\parbox[c]{5cm}{\textbf{Pre-processing}} & 
+\parbox[c]{5cm}{Feature selection,\\distance selection,\\data points normalization} & 
+\parbox[c]{5cm}{\textit{~\\- What is the data about?\\- What are the relevant data features, and how to efficiently extract them?\\- Do I need to perform some transformations on the data points before comparing their vectors?\\- How do I compare data vectors?\newline}}\\
+\hline
+\parbox[c]{5cm}{\textbf{Clustering}} & 
+\parbox[c]{5cm}{Choice of the algorithm \\(and of corresponding\\ parameters)} & 
+\parbox[c]{5cm}{\textit{~\\- How do I efficiently get the clusters?\\- What is the algorithm input?\newline}}\\
+\hline
+\parbox[c]{5cm}{\textbf{Clustering\\validation}} & 
+\parbox[c]{5cm}{Internal/external measures} & 
+\parbox[c]{5cm}{\textit{~\\- How do I check if the clusters are consistent with the original data (external measures)?\\- How do I check if the algorithm went wrong (internal measures)?\newline}} \\
+\hline
+\end{tabular}
+\caption{Cluster analysis steps (according to \cite{handl2005computational})}
+\label{clustersteps}
+\end{table}
+
+Clustering is not all about applying a certain algorithm to the data (see Figure \ref{clusteranalysis} and Table \ref{clustersteps}). Each step above is of equal importance. More especially, validation step is of paramount importance, since there is no clustering algorithm that will be able to predict the best grouping of points for any kind of data -with more than 2 points\cite{kleinberg2002impossibility}. The choice of the algorithm may determine the shape of the resulting clusters (e.g. spherical for K-means), their size and their density, for instance. Thus having an idea of the clustering error can be helpful.\\
+
+Moreover, feature selection, especially for gene expression clustering,  is also a critical step. Since only a handful of genes are really informative, that, provide insight on the cell functional family, the remaining of the features is but noise, thus useless, and may also prevent an algorithm to find the patterns. There is currently no common definition of what an informative gene should be, and many methods exist\cite{hira2015review}\cite{jirapech2005feature}\cite{latkowski2014feature}. Most of the time, a gene is considered informative if the variance of its expression across the cells is high, and if they are considered independent -this leads to the use of PCA on the gene expression matrix. However, PCA actually limits the number of informative genes to the minimum of the dimensions of the gene expression matrix $M$ (because the loading vectors it computes are the eigenvectors of $M^{T}M$, in increasing corresponding eigenvalue order), and assumes a linear relationship between the gene expression values\cite{pearson1901liii], so this definition is not really satisfying. Plus, the variance of gene expression may be due to a dropout event. Other algorithms select the features according to their frequency in the gene expression matrix\cite{kiselev2016sc3}: ubiquitous genes are removed, because they are considered poorly specific, rare genes can be seen as noise, or, if a certain gene appear in only a few cells or with a low expression value, it may be also removed. However, this approach may prevent the algorithm to find rare cell types for instance\cite{kiselev2016sc3}. To my mind, informative genes are features with non-null variance, frequency in cells inferior to a certain threshold (typically, less than 70\% of the cells), and such as the (positive or negative) correlation between two informative genes is less than a certain threshold (for instance, 0.9). This quite intuitive definition is actually used in the \textbf{caret} package\cite{kuhn2008caret}, among other softwares, and also described in \cite{guyon2003introduction}. I could not actually find a convincing non-parametric definition. The limit on the frequency actually removes all the quality control genes. The correlation function chosen may be a rank correlation function such as Kendall's $\tau$\cite{kendall1938new}, to avoid the caveats of the Pearson correlation measure, for instance, sensibility to outliers\cite{outliercorr}.
+
+\begin{definition}[Kendall's $\tau$]\label{kendalltau}{Let $n \in \mathbb{N}^*$, X = \{$x_1, x_2, ..., x_n$\} and Y = \{$y_1, y_2, ..., y_n$\}, such as X and Y have unique orderable values.\\
+
+Let $a$ denote the number of pairs $(x_i, y_i), (x_j, y_j), i,j \in \{1,2, ..., n\}$ such as $x_i <  x_j \land y_i < y_j$ OR $x_i >  x_j \land y_i > y_j$, and $b$ denote the number of pairs such as $x_i <  x_j \land y_i > y_j$ OR $x_i >  x_j \land y_i < y_j$. Then:
+
+\begin{center} $\tau = \frac{a-b}{\frac{1}{2} \times n \times (n - 1)}$ \end{center}}\end{definition}
+
+\chapter{Example of use of the application}
+
+This is an example about how to use the application with the \textit{Ciona intestinalis} dataset\cite{suyama2016singlecell} (the dataset can be modified using the button on the top left of the application front page). I will compare the results obtained with the application (for cell B5.2 against B5.1, A5.1, A5.2, a5.3, a5.4 and b5.3, b5.4, and genes KH.C9.853 and KH.C13.27) and Figure D, page 382, in \cite{matsuoka2013transcriptome}.\\
+
+In the \textbf{Data visualization} tab (see Figure \ref{menu}), the front page displays a Principal Component Analysis (PCA) plot, indicating each cell type and embryo by a certain shape and colour, which is meant to give a visualization of all cells in the dataset, and help selecting the relevant cell groups.\\
+
+On the right side, the heatmap is coloured according to the number of raw counts in each cell for each of the $min(10, p)$ most highly-expressed genes (where $p$ is the number of genes), in order to visualize the potentially gene outliers\cite{poirion2016single}. On the sides can be seen hierarchical clusterings of the cells (on top), and of the genes (on the left).
+
+\begin{figure}[H]
+\centering
+\subfigure\includegraphics[scale=0.2]{application/menu.png}
+\subfigure\includegraphics[scale=0.2]{application/cellselection.png}
+\caption{Menu \& cell selection}
+\label{menu}
+\end{figure}
+
+The two groups (or conditions) to compare can be selected by drag and drop (see second Figure \ref{menu}).\\
+
+At first, the \textbf{Differential expression analysis} tab (see Figure \ref{geneselection}) allows the user to view the raw counts of every gene in every cell of the dataset. Then genes can be selected directly from the table (or using the provided buttons). The user can search for a given gene with the search bar on the top-right corner of the table. The PCA biplot can be updated: the PCA is then performed on the currently selected genes.\\
+
+Differential expression analysis pipeline (from MAST package\cite{finak2015mast}) is performed on the selected genes and cell groups when clicking on "Run computation on selection" button (see Figure \ref{geneselection}). After a few seconds of computing, the front page displays the table with genes ranked in increasing \textbf{p-value} order (see Figure \ref{de}). The p-values are a way to quantify the probability that a certain gene can be differentially expressed \textit{only by chance} between the two cell groups: the lower a p-value is, the more the associated gene is likely to be differentially expressed in practice.\\
+
+In the other tab, there is a heatmap with the selected cells and the most \textbf{differentially-expressed genes} (the genes which expression level strongly differs according to the considered cell group), with associated hierarchical clusterings (on genes on the left, on cells on top of the heatmap (see Figure \ref{de}).\\
+
+Moreoever, the application offers now the opportunity to select genes according to their \textbf{p-values}. The cutoff value is user-selected with the slider bar (see Figures \ref{pcutoff}).\\
+
+\begin{figure}[H]
+\centering
+\subfigure\includegraphics[scale=0.2]{application/geneselection.png}
+\subfigure\includegraphics[scale=0.2]{application/geneselected.png}
+\caption{Gene selection panel}
+\label{geneselection}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\subfigure\includegraphics[scale=0.2]{application/pvalue-results.png}
+\subfigure\includegraphics[scale=0.2]{application/de-results.png}
+\caption{Differential expression analysis results}
+\label{de}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\subfigure\includegraphics[scale=0.2]{application/selectpvaluecutoff.png}
+\subfigure\includegraphics[scale=0.2]{application/selectpvaluecutoff2.png}
+\caption{Gene selection with p-value cutoff}
+\label{pcutoff}
+\end{figure}
+
+In the \textbf{Gene expression pattern visualization} tab (see Figure \ref{visualization}), when the selected threshold type is set to "Binary", the front page displays a schema of the selected cells in each group, where each rectangle represents one of the selected genes.\\
+
+Given the threshold value (in percentage of the total raw count expression value of a given gene in a given cell), the rectangle is colored if and only if the gene expression raw count value of the gene in the cell is over this threshold. For instance, if the threshold is fixed to 10\% of the total expression value, the rectangle associated with gene $i$ in the set of rectangles corresponding to cell $j$ will be colored if and only if (M being the gene expression matrix) $M_{i,j} > 10\% \times \sum{_{k}}{M_{k, j}}$. It should be kept in mind that cell gene patterns cannot be compared directly, since the expressiveness of a given gene is only determined by the ratio gene expression value/ total gene expression value in the considered cell.\\
+
+The threshold value is user-selected with a slider bar (see Figure \ref{visualization}).\\
+
+When the threshold type is set to "Graded", the gene expression patterns are colored according to the legend displayed on the left, the same way as with binary threshold (see Figure \ref{graded}).\\
+
+Eventually, a script is also provided to make adding new datasets to the application easier. Source code and other tests can be found at: {\url{https://github.com/oist-gene-clustering/scwebexplorer}}
+
+\begin{figure}[H]
+\centering
+\subfigure\includegraphics[scale=0.2]{application/patternthres1.png}
+\subfigure\includegraphics[scale=0.2]{application/patternthres2.png}
+\caption{Visualization of gene expression pattern with selection of a binary gene expression threshold}
+\label{visualization}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\subfigure\includegraphics[scale=0.2]{application/gradedthres.png}
+\subfigure\includegraphics[scale=0.5]{application/figureDchordate.png}
+\caption{Visualization of graded gene expression pattern and comparison with Figure B from \cite{matsuoka2013transcriptome}. On the figure, the expressiveness of both genes in all cells except B5.2 is below 50\% of the total gene expression in each cell. Similar results can be seen on the gene patterns returned by the application, except for the almost null gene expression for both genes in cell B5.1, that may be due to a dropout event. These figures rely on different datasets for the \emph{Ciona intestinalis}: Figure B uses data from \cite{matsuoka2013transcriptome}, whereas the application computes the patterns on the dataset from \cite{suyama2016singlecell}}
+\label{graded}
+\end{figure}
+
 \chapter{Modeling}
 
 I performed some tests on the Tintori, Ciona and Biase datasets (more information about these datasets can be found in the following section), in order to guess the best distribution model for the margin functions and the copula. The first two datasets feature raw count gene expression matrices, whereas the Biase dataset use normalized counts (FPKM).
 
 \section*{Marginal distributions}
 
-The gene expression values of dropout genes are almost always null, hence can be modelled by the low-magnitude Poisson distribution, thus I focus on non-dropout genes. The functions used for plotting figures \ref{geneexpression1}, \ref{geneexpression2} and \ref{geneexpression3} can be found in the file \textit{utils.R} in the \textbf{Mine} algorithm code. More plots can be found at: {\url{https://github.com/oist-gene-clustering/mine}}\\
+The gene expression values of dropout genes are almost always null, hence can be modelled by the low-magnitude Poisson distribution, thus I focus on non-dropout genes. The functions used for plotting figure \ref{geneexpression3} can be found in the file \textit{utils.R} in the \textbf{Mine} algorithm code. More plots can be found at: {\url{https://github.com/oist-gene-clustering/mine}}\\
 
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.35]{plotsCopula/tintori/depCellGene_m=5_tintori_nodropout.png}
-\subfigure\includegraphics[scale=0.35]{plotsCopula/tintori/depCellGene_m=5_tintori_nodropout3.png}
-\caption{Gene expression values for two non-dropout genes in the Tintori dataset (cells in $x$ axis, values in $y$ axis)}
-\label{geneexpression1}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\subfigure\includegraphics[scale=0.35]{plotsCopula/tintori/depCellGene_m=5_tintori_nodropout.png}
+%\subfigure\includegraphics[scale=0.35]{plotsCopula/tintori/depCellGene_m=5_tintori_nodropout3.png}
+%\caption{Gene expression values for two non-dropout genes in the Tintori dataset (cells in $x$ axis, values in $y$ axis)}
+%\label{geneexpression1}
+%\end{figure}
 
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellGene_nodropout_ciona.png}
-\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellGene2_nodropout_ciona.png}
-\caption{Gene expression values for two non-dropout genes in the Ciona dataset (cells in $x$ axis, values in $y$ axis)}
-\label{geneexpression2}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellGene_nodropout_ciona.png}
+%\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellGene2_nodropout_ciona.png}
+%\caption{Gene expression values for two non-dropout genes in the Ciona dataset (cells in $x$ axis, values in $y$ axis)}
+%\label{geneexpression2}
+%\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -1098,19 +1020,19 @@ The gene expression values of dropout genes are almost always null, hence can be
 
 The following plots (produced by the function \textit{pairs.panels} from package \textbf{psych}) represent a histogram of the values found in each cell, the correlation ellipses found between two different cells, the linear model found (the red line) and the correlation number between the two vectors associated with the two cells of the considered pair. Missing values (NA) for dropout genes are due to the null variance of their gene expression values. More plots can be found at: {\url{https://github.com/oist-gene-clustering/mine}}\\
 
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.4]{plotsCopula/tintori/depCellnGene_dropout_tintori.png}
-\caption{Correlation between $5$ cells (which names are written on the plot) from the Tintori dataset according to the gene expression in $5$ randomly-selected \textbf{dropout} genes}
-\label{cellcorrelationdropout}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[scale=0.4]{plotsCopula/tintori/depCellnGene_dropout_tintori.png}
+%\caption{Correlation between $5$ cells (which names are written on the plot) from the Tintori dataset according to the gene expression in $5$ randomly-selected \textbf{dropout} genes}
+%\label{cellcorrelationdropout}
+%\end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.4]{plotsCopula/ciona/depCellnGene_dropout_ciona.png}
-\caption{Correlation between $5$ cells (which names are written on the plot) from the Ciona dataset according to the gene expression in $5$ randomly-selected \textbf{dropout} genes}
-\label{cellcorrelationdropout2}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[scale=0.4]{plotsCopula/ciona/depCellnGene_dropout_ciona.png}
+%\caption{Correlation between $5$ cells (which names are written on the plot) from the Ciona dataset according to the gene expression in $5$ randomly-selected \textbf{dropout} genes}
+%\label{cellcorrelationdropout2}
+%\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -1127,21 +1049,29 @@ The following plots (produced by the function \textit{pairs.panels} from package
 \label{cellcorrelationnodropout}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellnGene_nodropout_ciona.png}
-\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellnGene_nodropout_em1_ciona.png}
-\caption{Correlation between $5$ cells (which names are written on the plot) from the Ciona dataset according to the gene expression in $5$ randomly-selected \textbf{non-dropout} genes (top). Correlation between $5$ cells from Embryo 1 (which names are written on the plot) from the Ciona dataset according to the gene expression in $5$ randomly-selected \textbf{non-dropout} genes.}
-\label{cellcorrelationnodropout2}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellnGene_nodropout_ciona.png}
+%\subfigure\includegraphics[scale=0.35]{plotsCopula/ciona/depCellnGene_nodropout_em1_ciona.png}
+%\caption{Correlation between $5$ cells (which names are written on the plot) from the Ciona dataset according to the gene expression in $5$ randomly-selected \textbf{non-dropout} genes (top). Correlation between $5$ cells from Embryo 1 (which names are written on the plot) from the Ciona dataset according to the gene expression in $5$ randomly-selected \textbf{non-dropout} genes.}
+%\label{cellcorrelationnodropout2}
+%\end{figure}
 
-%% plots pour les copulas et relation entre variables et latent variables
+%% TODO plots pour les copulas et relation entre variables et latent variables
 
 It can noticed that cells from a same embryo are highly correlated, even if they have different cell types.
 
 \section*{Parameter estimation methods}
 
 Four sets of parameters need to be estimated: the Poisson-like distribution parameter, the Negative Binomial-like mean and dispersion parameters, the mixture rates for margin and copula distributions, and the copula parameters, that is, the two means of the bimodal copula and the covariance matrix parameter. I used for each of these parameters a non-optimization method, to lessen the computational cost of the algorithm, and to ensure more accuracy and more stability.
+
+\bigskip
+\noindent \textbf{Estimation of the parameters}
+\bigskip
+
+I would like to compute the values of the parameters for the margin and copula functions -for instance, the mean vector and the covariance matrix for Gaussian copulas.  In order to find their values, the (log) \textbf{likelihood function} of the copula can be maximized, respect to the set of all parameters, but for Gaussian copulas, it has no closed form. There are many strategies to avoid this issue; for instance, a heuristic estimation method, called Inference Functions for Margins (IFM), suggested by \cite{joe1996estimation}, is to find the best estimators of the margin parameters, by maximizing the likelihood function of each of the margins, and then use them in the copula likelihood function to find the copula parameters with maximum likelihood estimation. This method is computationally less costly, and is considered a good heuristic method\cite{bouye2000copulas}, although it does not give the exact solution. Other methods also exist, see \cite{yan2007enjoy}.\\
+
+Mainly in order to have a reasonable runtime, and avoid the problem of initialization for optimization methods, I decided to estimate the margin parameters and the copula parameters with provided non-optimization methods\cite{yu2013shrinkage}\cite{schafer2005shrinkage} (see Appendix for further information). These estimates are also proven to be more robust, and avoid the problem to deal with singularities when fitting the covariance matrix. This issue cannot actually be ignored, because gene expression matrices have usually a lot of null values, due to dropout events, for instance.\\
 
 \bigskip
 \noindent \textit{Poisson-like parameter}
@@ -1159,9 +1089,7 @@ The mean is found by the method for DESeq2 software, first described by \cite{an
 \noindent \textit{Mixture rate parameters}
 \bigskip
 
-I assumed that the dropout events (resp. mild-high expressiveness events) of different (sets of) genes are independent, thus a logistic regression can be applied to predict the probability of the considered event\cite{andersonLogistic}\cite{petersLecture}\cite{frostWhy}.\\
-
-%[TODO ADD PLOTS]\\
+I assumed that the dropout events (resp. mild-high expressiveness events) of different (sets of) genes are independent, thus a logistic regression can be applied to predict the probability of the considered event\cite{andersonLogistic}\cite{petersLecture}\cite{frostWhy}. This hypothesis is also assumed by \cite{kharchenko2014bayesian}. See also the plots in folder \emph{plots reg log}, in the Github repository associated with the report. These plots have been generated with functions written in the \emph{utils.R} file in \textbf{Mine} algorithm.\\
 
 \begin{itemize}
 \item After application of the MAST function, gene expression values of genes which are considered dropout (i.e. which gene expression value is thought to be background noise) are set to zero.\\
@@ -1328,11 +1256,11 @@ The \textif{estimateMarginParameters} function uses formulas for mean and disper
 
 The estimated gene expression dispersion vectors margin\_deltas are obtained by the shrinkage estimation method described in \cite{yu2013shrinkage}.\\
 
-The correlation matrix is found by the method described in \cite{schafer2005shrinkage}, which allows to find a target correlation matrix T such as T is diagonal: $\exists \nu \in (\mathbb{R}^{+})^{p}, T = $\textit{diag}$(\nu)$, which allows for different variances. This is a commonly used model for gene expression covariance matrices, although it is really restrictive, and it is unsure whether it can actually describe properly the true gene regulatory system. This computation is provided by the R package \textbf{corpcor}. I could have used the formula suggested by \cite{chen2009shrinkage}, as it is especially targeted at Gaussian distributions, but the resulting matrix is $\beta \times I_d$, where $I_d$ is the identity matrix and $\beta \in \mathbb{R}^{+}$, which is a even more constrained model. Optimization methods often fail, because the quadratic system to solve is often singular, due to the large number of zeroes in the gene expression matrix, and when it actually works, the resulting matrix is often ill-conditioned -even when a regularization is applied to the optimization problem- so not only not useful in practice, but also probably wrong biologically speaking.
+The correlation matrix is found by the method described in \cite{schafer2005shrinkage}, which allows to find a target correlation matrix T such as T is diagonal: $\exists \nu \in (\mathbb{R}^{+})^{p}, T = $\textit{diag}$(\nu)$, which allows for different variances. This is a commonly used model for gene expression covariance matrices, although it is really restrictive, and it is unsure whether it can actually describe properly the true gene regulatory system. This computation is provided by the R package \textbf{corpcor}. I could have used the formula suggested by \cite{chen2009shrinkage}, as it is especially targeted at Gaussian distributions, but the resulting matrix is $\beta \times I_d$, where $I_d$ is the identity matrix and $\beta \in \mathbb{R}^{+}$, which is a even more constrained model. Optimization methods often fail, because the quadratic system to solve is often singular, due to the large number of zeroes in the gene expression matrix, and when it actually works, the resulting matrix is often ill-conditioned -even when a regularization is applied to the optimization problem- so not only not useful in practice, but also probably wrong biologically speaking.\\
 
-%%The two mean vector parameters for the bimodal copulas are defined as follows: for a given copula/condition and a given gene, 
+The two mean vector parameters chosen for the bimodal copulas are defined as follows: if $\mu_{high, k}$ (resp. $mu_{mild, k}$) is the $p$-valued mean vector associated with copula $k$ for highly (resp. mildly)-expressed genes, where $p$ is the number of genes, then $\mu_{high, k}$[$i$] (resp. $\mu_{mild, k}$[$i$]) is the value of the first (resp. second) highest peak in density computed by the MAST function for the bin of genes to which gene $i$ belongs. See \emph{utils.R} file in \textbf{Mine} algorithm. If there are less than two peaks for this bin, then $\mu_{high, k}$[$i$] (resp. $\mu_{mild, k}$[$i$]) is the average gene expression value overall cells for the highly (resp. mildly)-expressed genes in cell $k$.\\
 
-The mixture rate for margin and copula functions are computed with the logistic regression models fitted as described above.
+The mixture rate for margin and copula functions are computed with the logistic regression models fitted as described above.\\
 
 \bigskip
 \noindent \textbf{Merge pattern clusters (pre-processing step)}
@@ -1368,6 +1296,85 @@ In the future, the user would be able to get access to the error rate for the lo
 
 \chapter{Benchmark}
 
+\section*{Tested algorithms}
+
+Several different methods have been designed for clustering (sc)RNAseq (see Tables \ref{methods} and \ref{methods2}). I focused on well-documented algorithms implemented in R, that have been released before March 2017.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{| l | l | l | l |}
+\hline
+\parbox[c]{5cm}{\textbf{Category}} & 
+\parbox[c]{5cm}{\textbf{Description}} &
+\parbox[c]{5cm}{\textbf{Implementations}}\\
+\hline
+\parbox[c]{5cm}{\textbf{Connectivity-based}} & 
+\parbox[c]{5cm}{~\\ These algorithms build a hierarchy of the samples (i.e. a tree which leaves are the samples), according to the chosen distance measure.\\
+
+Given a height, the final clustering is the set of trees in the forest obtained by deleting edges higher than the selected height. \newline} &
+\parbox[c]{5cm}{Hierarchical clustering\\(SINCERA\cite{guo2015sincera}), ...}\\
+\hline
+\parbox[c]{5cm}{\textbf{Centroid-based}} & 
+\parbox[c]{5cm}{~\\ Given the expected number of clusters $k$, these algorithms compute iteratively $k$ points, such as each of them 
+is the centroid of a set of similar points.\\ 
+
+The final clustering is obtained by assigning each point to the cluster of the nearest centroid. These steps are repeated until convergence of the clusters.\newline} &
+\parbox[c]{5cm}{K-means\cite{macqueen1967some}\cite{tseng2007penalized},\\
+
+Fuzzy C-means\cite{dunn1973fuzzy}\cite{filippone2005unsupervised},\\
+
+Nonnegative Matrix\\ Factorization\cite{lee1999learning}\\(e.g. NIMFA\cite{shao2016robust}),\\
+
+Nearest Neighbor-like\\(e.g. SNN-Cliq\cite{xu2015identification}), ...}\\
+\hline
+\parbox[c]{5cm}{\textbf{Density-based}} & 
+\parbox[c]{5cm}{~\\ Clusters are areas of higher density (in the number of data points) compared to the remainder of the data points.\\
+
+These algorithms try to detect local differences in density in order to find the clusters.\newline} &
+\parbox[c]{5cm}{DBSCAN\cite{ester1996density}, ...}\\
+\hline
+\end{tabular}
+\caption{Some categories of clustering algorithms with examples from gene expression clustering (1) (adapted from \cite{classifclustering})}
+\label{methods}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{| l | l | l | l |}
+\hline
+\parbox[c]{5cm}{\textbf{Distribution-based}} & 
+\parbox[c]{5cm}{~\\ A mixture of $k$ same-model distributions (where $k$ is the expected number of clusters) is fitted to the data, that is, the different parameters of the mixture are such as they maximize the likelihood of the observed data.\\
+
+Then the probability of membership of each point to every cluster is computed, and the final clustering is the one maximizing the membership probabilities.\newline} &
+\parbox[c]{5cm}{Gaussian Mixture Models\\ (e.g. EMCluster\cite{melnykov2009model},\\MCLUST\cite{fraley1999mclust}),\\
+
+\textit{ad hoc} models (e.g. Seurat\cite{satija2015spatial}), ...}\\
+\hline
+\parbox[c]{5cm}{\textbf{Discriminative feature\\computation}} & 
+\parbox[c]{5cm}{~\\These algorithms first compute a somehow summary of the most relevant features of each point, either
+by representing them by the restrictions of their associated vectors to the components having the maximum of variance (PCA), or
+by mapping the data vectors to 2D (resp. 3D) vectors such as the 2D (resp. 3D) representations of two similar vectors in the 
+original space are close in the new space (t-SNE).\\
+
+Then one of the algorithms above is applied to the resulting representations.\newline} &
+\parbox[c]{5cm}{Principal Component Analysis (e.g. pcaReduce\cite{yau2016pcareduce}),\\
+
+t-Stochastic Neighbor Embedding\\
+(e.g. t-SNE+K-means\cite{grun2015single},\\
+t-SNE+DBSCAN), ...}\\
+\hline
+\parbox[c]{5cm}{\textbf{Consensus clustering}} & 
+\parbox[c]{5cm}{~\\After having selected one of the algorithms described, and iterated it several times with different values of parameters, these algorithms construct a 
+consensus matrix $M$ such as: $M_{i,j}$ is the (mean) number of times points i and j are located in the same cluster.\\
+
+$M$ is then used to determine the final clustering.\newline} &
+\parbox[c]{5cm}{e.g. SC3\cite{kiselev2016sc3}, ...}\\
+\hline
+\end{tabular}
+\caption{Some categories of clustering algorithms with examples from gene expression clustering (2) (adapted from \cite{classifclustering})}
+\label{methods2}
+\end{table}
+
 \section*{Ranking}
 
 Let A denote the set of algorithms, and D the set of test datasets. Since the datasets have been produced with different methods, and are of variable quality, I decided to take into account the mean performance of all algorithms on a given dataset for the final ranking.\\
@@ -1380,7 +1387,7 @@ For each quantity $q$ (that gives the value of the corresponding attribute: \tex
 
 \begin{definition}[Weight associated with a dataset]\label{weightdataset}{For a dataset $d$: \begin{center}$\delta_{d} = \frac{\rho_{d}}{\sum{_{d' \in D} \rho_{d'}}$\end{center}}\end{definition}
 
-Thus this function gives more weight to results from datasets on which the tested algorithms give their best outputs, because these datasets are considered more relevant than other datasets where the clustering pattern is less easy to find.
+Thus this function gives more weight to results from datasets on which the tested algorithms give their best outputs (that is, datasets having the highest mean ARI value across all algorithms), because these datasets are considered more relevant than other datasets where the clustering pattern is less easy to find, and/or may not exist. To my mind, a "good" clustering algorithm should -almost- always be able to find the pattern whenever it exists, and is allowed to give a random, unstable result (i.e., that may be different from one iteration to another) on noise datasets for instance.
 
 \begin{definition}[Score function]\label{scorefunction}{For an algorithm $a$, evaluated for a given quantity $q$: \begin{center}score$_{q, d}$($a$) = $\sum{_{d \in D}$ $\rho_{d} \times q(d, a)$}\end{center}}\end{definition}
 
@@ -1746,25 +1753,27 @@ The functions used to generate the following plots and perform the computation o
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{benchmark/ariAverageAll.png}
-\caption{Average Adjusted Rand Index (ARI) for some algorithms on Biase, Deng, Goolam, Treutlein, Klein, Ciona, Tintori, Kolodziejczyk, Yan and Usoskin datasets}
+\caption{Regular -that is, not weighted- average Adjusted Rand Index (ARI) for some algorithms on Biase, Deng, Goolam, Treutlein, Klein, Ciona, Tintori, Kolodziejczyk, Yan and Usoskin datasets}
 \label{averageARI}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{benchmark/ariAll.png}
-\caption{Average Adjusted Rand Index (ARI) for some algorithms on Biase, Deng, Goolam, Treutlein, Klein, Ciona, Tintori, Kolodziejczyk, Yan and Usoskin datasets}
+\caption{Regular average Adjusted Rand Index (ARI) for some algorithms on Biase, Deng, Goolam, Treutlein, Klein, Ciona, Tintori, Kolodziejczyk, Yan and Usoskin datasets}
 \label{averageARI}
 \end{figure}
+
+Fuzzy C-means and K-means are more accurate when iterated a lot of times. But these algorithms rely on a good choice of the expected number of clusters, and on the initialization of the clusters. First issue can be tackled using gaps statistics\cite{hastie2001estimating} to guess the best number of clusters, while second issue may be solved by iterating the algorithm lots of times, with random initialization for instance.\\
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.35]{benchmark/ariAverageAllDatasets.png}
-\caption{Average ARI for all tested algorithms per dataset}
+\caption{Regular average ARI for all tested algorithms per dataset. Results on datasets with higher average ARI value are considered more relevant in the final ranking}
 \label{ariDataset}
 \end{figure}
 
-%%TODO comments on accuracy
+The pattern in the Ciona dataset\cite{suyama2016singlecell}, that I extracted from \cite{matsuoka2013transcriptome}, looks quite difficult to find for every algorithm. But the data quality is extremely high for this dataset, according to the quality control check tests I have performed on it (using \textsc{FastQC}\cite{andrews2010fastqc}). I could not really explain why the algorithms would fail so often on this dataset. But I have still accounted for it in the final ranking, because, to my mind, the behaviour of the algorithms when failing is also interesting to rank them.\\
 
 \bigskip
 \noindent \textbf{Stability of the clusterings}
@@ -1790,9 +1799,9 @@ But not only it is important to know if the algorithm often returns the same sol
 \label{allBoxplotARI}
 \end{figure}
 
-According to \cite{boxplot}, the thick black horizontal line is the median value (50th percentile) of the measure, and the top of the box is the 75th percentile of the values, the bottom the 25th percentile. The set of percentiles are the 99 values that split the range of the values into 100 equal parts. The top of the upper (resp. the bottom of the lower) black vertical line ("whisker") is, by default, either the maximum (resp. minimum) value, either the 75th percentile (resp. the 25th percentile) plus (resp. minus) $\frac{3}{2}$ of the box length -75th percentile minus 25th percentile.
+According to \cite{boxplot}, the thick black horizontal line is the median value (50th percentile) of the measure, and the top of the box is the 75th percentile of the values, the bottom the 25th percentile. The set of percentiles are the 99 values that split the range of the values into 100 equal parts. The top of the upper (resp. the bottom of the lower) black vertical line ("whisker") is, by default, either the maximum (resp. minimum) value, either the 75th percentile (resp. the 25th percentile) plus (resp. minus) $\frac{3}{2}$ of the box length -75th percentile minus 25th percentile.\\
 
-%%TODO comments on stability
+Although Fuzzy C-means and K-means are the most accurate algorithms, according to the previous section, they also give unstable results. Since lots of information is actually unknown when performing clustering -because it is mainly an exploratory analysis operation- it looks quite difficult to find the best parameters with which the algorithm should be run, and to choose the best number of iterations to be sure to find the best solution. To my opinion, for a more direct analysis of the data, algorithms allowing a better tradeoff between stability and accuracy should be privilegied over these two ones.\\
 
 \bigskip
 \noindent \textbf{Time complexity}
@@ -1808,24 +1817,89 @@ The functions used to generate the following plots can be found in the benchmark
 \label{time1}
 \end{figure}
 
-\chapter{Proofs}
+%\chapter{Proofs}
 
-\section*{Parametrization equivalences}
+%\section*{Parametrization equivalences}
 
-\bigskip
-\noindent \textbf{Negative-Binomial distribution}
-\bigskip
-
-%%TODO
-
-\bigskip
-\noindent \textbf{Gamma distribution}
-\bigskip
+%\bigskip
+%\noindent \textbf{Negative-Binomial distribution}
+%\bigskip
 
 %%TODO
 
-\section*{Model}
+%I want to show that the parametrization using regular arguments $r$ (the number of times needed to get a success event) and $p$ (the probability of a success event) is equivalent to the parametrization using the mean value obtained $\mu$ and the dispersion parameter $\delta$
+
+%\begin{lemma}[Equivalence between parametrizations]{
+%\begin{center} \end{center}
+%\begin{center} \end{center}
+%}\end{lemma}
+
+%\begin{proof}
+%\end{proof}
+
+%\bigskip
+%\noindent \textbf{Gamma distribution}
+%\bigskip
 
 %%TODO
+
+%\begin{lemma}[Equivalence between parametrizations]{
+%\begin{center} \end{center}
+%\begin{center} \end{center}
+%}\end{lemma}
+
+%\begin{proof}
+%\end{proof}
+
+%\section*{Model}
+
+%%TODO
+
+%\begin{lemma}[Distributions for variables $(Y_i)_i$ knowing the distributions for variables $(X_i)_i \geq 0$]{
+%$\forall i,$ if $Y_i \thicksim -X_i$:\\
+%\begin{center} $\forall x \leq 0$, \emph{Prob}$(Y_i = x)$ = \emph{Prob}$(X_i = -x)$ \end{center}
+%\begin{center} $\forall p \in [0, 1]$, sup\{$x \leq 0$ | \emph{Prob}$(Y_i \leq x) \geq p$\} = sup\{$x \leq 0$ | \emph{Prob}$(X_i \geq -x) \geq p$\} %= inf\{$x \geq 0$ | \emph{Prob}$(X_i \geq x) \geq p$\} \end{center}
+%\begin{center} \end{center}
+%}\end{lemma}
+
+%\begin{proof}
+%\end{proof}
+
+\chapter{Fiche synthétique}
+
+\begin{center}\textbf{Classification non supervisée d'échantillons par niveau d'expression de gène pour les données de séquençage d'ARN pour une cellule}\end{center}
+
+\begin{center}Clémence REDA\\ encadrée par Garth ILSLEY et Nicholas LUSCOMBE\\
+Equipe \textbf{Genomics and Regulatory Systems},\\Okinawa Institute of Science and Technology, Japon\end{center}
+
+\textbf{Le contexte général}\\
+
+Le séquençage des molécules d'\textbf{Acide RiboNucléique messager (ARNm)} dans une unique cellule donnée (\textbf{single-cell RNA sequencing}) permet de connaître le code, généré par l'alignement de nucléotides adénine, guanine, cytosine et uracil, qui commande la production de protéines, et donc le fonctionnement de l'organisme auquel appartient la cellule. En effet, le nombre d'apparitions de la séquence associée à un certain gène (appelé \textbf{niveau d'expression} du gène) dans une molécule d'ARNm peut être comptabilisé, et est relié au nombre de protéines associées à ce même gène produites. Les niveaux d'expression de différents gènes dans une cellule donnée peuvent être résumés dans un vecteur de nombres, et la concaténation de plusieurs de ces vecteurs, provenant de cellules différentes, forme une \textbf{matrice d'expression de gène}, à partir de laquelle des informations concernant les fonctions des cellules ou des gènes étudiés peuvent être extraites. En particulier, la classification non supervisée des cellules par leurs niveaux d'expression de gène peut permettre de découvrir de nouveaux types de cellules, ou d'étudier les interactions de régulation entre les gènes (inhibition, renforcement de l'expression du (des) gène(s)) dans un certain type de cellule.\\
+
+\textbf{Le problème étudié}\\
+
+Une notion importante dans ce domaine est le \textbf{motif d'expression de gène}, qui est le profil d'expression de différents gènes supposé commun à toutes les cellules d'une certaine famille fonctionnelle, c'est-à-dire les niveaux d'expression relatifs entre les différents gènes. Si de nombreux algorithmes ont déjà été proposés pour trouver les gènes qui discriminent le mieux les différentes familles fonctionnelles de cellules, ou pour regrouper les cellules selon leur type (\textbf{clustering}), il manque un outil de visualisation non biaisé de motifs d'expression, et une comparaison des différents algorithmes de \textit{clustering} pour les données de \textit{single-cell RNA sequencing}. De plus, la plupart des algorithmes proposés ne semblent pas tenir compte des spécificités propres aux données obtenues par cette méthode de séquençage. Parallèlement, il manque une modélisation simple de l'expression de gène dans le cas de \textit{single-cell RNA sequencing}, qui est utile notamment pour le contrôle de la qualité des données brutes en sortie du séquenceur.\\
+
+\textbf{La contribution proposée}\\
+
+Durant ce stage, j'ai programmé un outil de visualisation des données de \textit{single-cell RNA sequencing} qui permet d'explorer un ensemble de données sur un organisme, sous la forme d'une matrice d'expression de gène : distinguer des gènes exprimés différemment d'un groupe de cellules à l'autre, visualisation du motif d'expression de groupes sélectionnables de cellules.\\
+
+La technique de séquençage ARN \textit{single-cell RNA sequencing} étant relativement récente, il n'existe qu'un seul article, à ma connaissance, qui ait réalisé une comparaison des différents algorithmes de \textit{clustering} pour ce type de données. J'ai donc également proposé une analyse comparée de plusieurs algorithmes de \textit{clustering}, sur 10 matrices d'expression de gène obtenues par \textit{single-cell RNA sequencing}, en les testant sur la similarité du résultat obtenu par rapport aux étiquettes de référence issues des articles d'où provenaient les données, sur leur temps de calcul pour la meilleure solution obtenue, et la stabilité des solutions retournées (l'algorithme retourne souvent la même solution pour un même ensemble de données en entrée à chaque itération). J'ai produit un classement des algorithmes selon leurs scores dans ces différentes catégories.\\
+
+Enfin, j'ai conçu un modèle de l'expression de gène dans une seule cellule, qui tient compte des particularités qui ont été observées dans les données issues de \textit{single-cell RNA sequencing}. J'en ai dérivé une méthode de \textit{clustering} qui est plus spéficiquement orientée vers le clustering de \textit{single-cell RNA sequencing}.\\
+ 
+\textbf{Les arguments en faveur de sa validité}\\
+
+\begin{itemize}
+\item Le code d'une première version fonctionnelle de l'application est en ligne, et l'application permet d'intégrer facilement de nouvelles données;
+\item L'analyse comparative de plusieurs algorithmes, sur différents ensembles de données, a été réalisée, en prenant en compte la variabilité de la qualité des ensembles de données de test, et permet de distinguer des algorithmes performants au niveau du résultat retourné, du temps de calcul, et de la stabilité du résultat;
+\item Le modèle d'expression de gène proposé permet de s'affranchir de l'hypothèse d'indépendance, ou de dépendance uniquement par paires de gènes, dans les niveaux d'expression de gène entre les différents gènes, contrairement à la plupart des méthodes utilisées auparavant, et de souligner les liens de régulation entre les gènes. Une méthode de \textit{clustering} a été implémentée, mais n'est pas fonctionnelle. Cependant, sa conception a permis de distinguer les points importants à respecter pour pouvoir interpréter correctement les résultats d'un algorithme de \textit{clustering} appliqué à des données de séquençage ARN.
+\end{itemize}
+
+\textbf{Le bilan et les perspectives}\\
+
+La méthode de séquençage utilisée, \textit{single-cell RNA sequencing}, est encore récente, et de nouvelles améliorations et innovations sont en cours. En particulier, la taille croissante des données proposera à l'avenir de nouveaux défis à relever pour les bioinformaticiens en matière de \textit{clustering}, en particulier au niveau de la complexité temporelle. De plus, la méthode proposée tente de donner un sens au \textit{clustering} retourné, en utilisant la notion de motif d'expression, et en tentant de simuler les réseaux de régulation de gènes.\\
+
+Beaucoup de points dans le mécanisme de régulation de gènes, et dans la génération de sous-populations de cellules, sont encore à éclaircir, et une visualisation claire et intuitive des données est un premier pas vers la compréhension de ces phénomènes.\\
 
 \end{document}
